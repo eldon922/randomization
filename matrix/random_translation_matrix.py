@@ -1,14 +1,20 @@
-from . import matrix
+from matrix.matrix import Matrix
+from numpy import identity, append, ones
+from random import randint
 
 
-class RandomTranslationMatrix(matrix.Matrix):
-    def __init__(self, numberOfRows, numberOfColumns):
-        pass
+class RandomTranslationMatrix(Matrix):
+    def __init__(self, dimension):
+        matrix = identity(dimension)
+        matrix[-1][:-1] = [randint(0,100) for x in matrix[-1][:-1]]
+
+        super(matrix)
 
     @staticmethod
     def addAColumnOfOnes(matrix):
-        pass
+        matrixTransposed = matrix.transpose()
+        return Matrix(append(matrixTransposed.getMatrix(), ones((1, matrixTransposed.getNumberOfColumns())), axis=0)).transpose()
 
     @staticmethod
     def removeLastColumn(matrix):
-        pass
+        return Matrix(matrix.transpose().getMatrix()[:-1].T)

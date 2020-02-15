@@ -1,15 +1,29 @@
+from numpy.linalg import det
+
+
 class Matrix:
     def __init__(self, matrix):
         self._matrix = matrix
 
     def getNumberOfRows(self):
-        pass
+        return self._matrix.shape[0]
 
     def getNumberOfColumns(self):
-        pass
+        return self._matrix.shape[1]
 
     def multiply(self, multiplierMatrix):
-        pass
+        self._matrix = self._matrix @ multiplierMatrix
+        return self
 
     def get(self, row, col):
-        pass
+        return self._matrix[row][col]
+
+    def getMatrix(self):
+        return self._matrix
+
+    def determinant(self):
+        return det(self._matrix)
+
+    def transpose(self):
+        self._matrix = self._matrix.T
+        return self
