@@ -1,15 +1,22 @@
+import numpy as np
+import pandas as pd
+
 class CSVPreprocessor:
     def readCSV(self, filePath):
-        pass
+        self._filePath = filePath
+        self._dataCSV = pd.read_csv(self._filePath)
+        self._matrix = np.array(self._dataCSV.values)
+        self._nameOfColumns = self._dataCSV.columns
 
     def csvToMatrix(self):
-        pass
+        return self._matrix
 
     def getFilePath(self):
-        pass
+        return self._filePath
 
     def getNameOfColumns(self):
-        pass
+        return self._nameOfColumns 
 
     def matrixToCSV(self, matrix, newFilePath):
-        pass
+        df = pd.DataFrame(matrix, columns = self._nameOfColumns)
+        df.to_csv(newFilePath, index=False)
