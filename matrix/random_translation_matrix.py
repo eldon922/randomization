@@ -8,7 +8,7 @@ class RandomTranslationMatrix(Matrix):
         matrix = identity(dimension)
         matrix[-1][:-1] = [randint(0,100) for x in matrix[-1][:-1]]
 
-        super(matrix)
+        super().__init__(matrix)
 
     @staticmethod
     def addAColumnOfOnes(matrix):

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 class Perturbation(ABC):
     def __init__(self, dataset):
         self._dataset = dataset
-        self._perturbedDataset = np.matrix(None)
+        self._perturbedDataset = None
 
     def getOriginalDataset(self):
         return self._dataset

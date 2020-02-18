@@ -6,7 +6,7 @@ from matrix.matrix import Matrix
 
 class RandomProjectionPerturbation(Perturbation):
     def __init__(self, dataset, epsilon, dimensionTarget):
-        super(dataset)
+        super().__init__(dataset)
         self._epsilon = epsilon
         self._dimensionTarget = dimensionTarget
 
@@ -21,8 +21,12 @@ class RandomProjectionPerturbation(Perturbation):
     #     return self._randomProjectionMatrix
 
     def perturbDataset(self):
-        transformer = GaussianRandomProjection()
-        self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
+        if self.checkMinDim():
+            transformer = GaussianRandomProjection(eps=self._epsilon)
+            self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
+            return True
+        else:
+            return False
 
     def getEpsilon(self):
         return self.epsilon
@@ -44,4 +48,4 @@ class RandomProjectionPerturbation(Perturbation):
             self._dataset.getNumberOfRows(), self._epsilon)
 
     def checkMinDim(self):
-        return self._k < self._dataset.getNumberOfColumns()
+        return self._k < self._dataset.getNumberOfColumns() and self._dimensionTarget < self._k

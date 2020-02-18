@@ -6,10 +6,17 @@ class CSVPreprocessor:
     def readCSV(self, filePath):
         self._filePath = filePath
         self._dataCSV = read_csv(self._filePath)
-        self._matrix = Matrix(array(self._dataCSV.values))
-        self._nameOfColumns = self._dataCSV.columns
+        
+        self._matrix = None
+        self._nameOfColumns = None
+
+    def dropColumn(self, columnName):
+        del self._dataCSV[columnName]
+        return True
 
     def csvToMatrix(self):
+        self._matrix = Matrix(array(self._dataCSV.values))
+        self._nameOfColumns = self._dataCSV.columns
         return self._matrix
 
     def getFilePath(self):

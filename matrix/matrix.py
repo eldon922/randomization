@@ -12,7 +12,7 @@ class Matrix:
         return self._matrix.shape[1]
 
     def multiply(self, multiplierMatrix):
-        self._matrix = self._matrix @ multiplierMatrix
+        self._matrix = self._matrix @ multiplierMatrix.getMatrix()
         return self
 
     def get(self, row, col):
