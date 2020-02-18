@@ -1,28 +1,26 @@
-from . import perturbation
-import numpy as np
+from .perturbation import Perturbation
+from matrix.matrix import Matrix, RandomTranslationMatrix, RandomRotationMatrix
+from numpy import array
 
 
-class RandomRotationPerturbation(perturbation.Perturbation):
+class RandomRotationPerturbation(Perturbation):
     def __init__(self, dataset):
         super(dataset)
 
-        self._randomTranslationMatrix = np.matrix(None)
-        self.generateRandomTranslationMatrix()
-
-        self._randomRotationMatrix = np.matrix(None)
-        self.generateRandomRotationMatrix()
+        self._randomTranslationMatrix = self.generateRandomTranslationMatrix()
+        self._randomRotationMatrix = self.generateRandomRotationMatrix()
 
     def generateRandomTranslationMatrix(self):
-        pass
+        return RandomTranslationMatrix(self._dataset.getNumberOfColumns())
 
     def getRandomTranslationMatrix(self):
         return self._randomTranslationMatrix
 
     def generateRandomRotationMatrix(self):
-        pass
+        return RandomRotationMatrix(self._dataset.getNumberOfColumns())
 
     def getRandomRotationMatrix(self):
         return self._randomRotationMatrix
 
     def perturbDataset(self):
-        pass
+        self._perturbedDataset = self._dataset @ self._randomTranslationMatrix @ self._randomRotationMatrix

@@ -1,27 +1,28 @@
-from . import perturbation
+from .perturbation import Perturbation
 import numpy as np
+from sklearn.random_projection import johnson_lindenstrauss_min_dim, GaussianRandomProjection
+from matrix.matrix import Matrix
 
 
-class RandomProjectionPerturbation(perturbation.Perturbation):
+class RandomProjectionPerturbation(Perturbation):
     def __init__(self, dataset, epsilon, dimensionTarget):
         super(dataset)
         self._epsilon = epsilon
         self._dimensionTarget = dimensionTarget
 
-        self._k = None
-        self.calculateK()
+        self._k = self.generateK()
 
-        self._randomProjectionMatrix = np.matrix(None)
-        self.generateRandomProjectionMatrix()
+    #     self._randomProjectionMatrix = self.generateRandomProjectionMatrix()
 
-    def generateRandomProjectionMatrix(self):
-        pass
+    # def generateRandomProjectionMatrix(self):
+    #     return 0
 
-    def getRandomProjectionMatrix(self):
-        return self._randomProjectionMatrix
+    # def getRandomProjectionMatrix(self):
+    #     return self._randomProjectionMatrix
 
     def perturbDataset(self):
-        pass
+        transformer = GaussianRandomProjection()
+        self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
 
     def getEpsilon(self):
         return self.epsilon
@@ -38,8 +39,9 @@ class RandomProjectionPerturbation(perturbation.Perturbation):
     def getK(self):
         return self._k
 
-    def calculateK(self):
-        pass
+    def generateK(self):
+        return johnson_lindenstrauss_min_dim(
+            self._dataset.getNumberOfRows(), self._epsilon)
 
     def checkMinDim(self):
-        pass
+        return self._k < self._dataset.getNumberOfColumns()
