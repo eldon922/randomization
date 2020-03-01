@@ -10,7 +10,8 @@ class RandomProjectionPerturbation(Perturbation):
         self._epsilon = epsilon
         self._dimensionTarget = dimensionTarget
 
-        self._k = self.generateK()
+        self._k = None
+        self.calculateK()
 
     #     self._randomProjectionMatrix = self.generateRandomProjectionMatrix()
 
@@ -21,31 +22,33 @@ class RandomProjectionPerturbation(Perturbation):
     #     return self._randomProjectionMatrix
 
     def perturbDataset(self):
-        if self.checkMinDim():
-            transformer = GaussianRandomProjection(eps=self._epsilon)
-            self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
-            return True
-        else:
-            return False
+        # if self.checkMinDim():
+        #     transformer = GaussianRandomProjection(eps=self._epsilon)
+        #     self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
+        #     return True
+        # else:
+        #     return False
+        transformer = GaussianRandomProjection(n_components=self._dimensionTarget, eps=self._epsilon)
+        self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
 
     def getEpsilon(self):
         return self.epsilon
 
     def setEpsilon(self, epsilon):
         self.epsilon = epsilon
+        
+    def getK(self):
+        return self._k
 
-    def getDimensionTarget(self):
-        return self._dimensionTarget
+    def calculateK(self):
+        self._k = johnson_lindenstrauss_min_dim(
+            self._dataset.getNumberOfRows(), self._epsilon)
+
+    def checkMinDim(self):
+        return self._k < self._dataset.getNumberOfColumns() and self._k <= self._dimensionTarget
 
     def setDimensionTarget(self, dimensionTarget):
         self._dimensionTarget = dimensionTarget
 
-    def getK(self):
-        return self._k
-
-    def generateK(self):
-        return johnson_lindenstrauss_min_dim(
-            self._dataset.getNumberOfRows(), self._epsilon)
-
-    def checkMinDim(self):
-        return self._k < self._dataset.getNumberOfColumns() and self._dimensionTarget < self._k
+    def getDimensionTarget(self):
+        return self._dimensionTarget

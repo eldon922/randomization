@@ -9,21 +9,27 @@ class RandomRotationPerturbation(Perturbation):
     def __init__(self, dataset):
         super().__init__(dataset)
 
-        self._randomTranslationMatrix = self.generateRandomTranslationMatrix()
-        self._randomRotationMatrix = self.generateRandomRotationMatrix()
+        self._randomTranslationMatrix = None
+        self.generateRandomTranslationMatrix()
+        self._randomRotationMatrix = None
+        self.generateRandomRotationMatrix()
 
-    def generateRandomTranslationMatrix(self):
-        return RandomTranslationMatrix(self._dataset.getNumberOfColumns())
+    def perturbDataset(self):
+        dataset_with_ones = RandomTranslationMatrix.addAColumnOfOnes(self._dataset)
+        translated_dataset_with_ones = dataset_with_ones.multiply(self._randomTranslationMatrix)
+        translated_dataset = RandomTranslationMatrix.removeLastColumn(translated_dataset_with_ones)
+
+        self._perturbedDataset = translated_dataset.multiply(self._randomRotationMatrix)
+        return True
 
     def getRandomTranslationMatrix(self):
         return self._randomTranslationMatrix
 
-    def generateRandomRotationMatrix(self):
-        return RandomRotationMatrix(self._dataset.getNumberOfColumns())
+    def generateRandomTranslationMatrix(self):
+        self._randomTranslationMatrix = RandomTranslationMatrix.generate(self._dataset.getNumberOfColumns() + 1)
 
     def getRandomRotationMatrix(self):
         return self._randomRotationMatrix
 
-    def perturbDataset(self):
-        self._perturbedDataset = self._dataset.multiply(self._randomTranslationMatrix).multiply(self._randomRotationMatrix)
-        return True
+    def generateRandomRotationMatrix(self):
+        self._randomRotationMatrix = RandomRotationMatrix.generate(self._dataset.getNumberOfColumns())

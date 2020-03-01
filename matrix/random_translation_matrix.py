@@ -3,12 +3,13 @@ from numpy import identity, append, ones
 from random import randint
 
 
-class RandomTranslationMatrix(Matrix):
-    def __init__(self, dimension):
+class RandomTranslationMatrix():
+    @staticmethod
+    def generate(dimension):
         matrix = identity(dimension)
         matrix[-1][:-1] = [randint(0,100) for x in matrix[-1][:-1]]
 
-        super().__init__(matrix)
+        return Matrix(matrix)
 
     @staticmethod
     def addAColumnOfOnes(matrix):

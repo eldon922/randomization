@@ -26,5 +26,9 @@ class CSVPreprocessor:
         return self._nameOfColumns 
 
     def matrixToCSV(self, matrix, newFilePath):
-        df = DataFrame(matrix.getMatrix(), columns = self._nameOfColumns)
+        if matrix.getNumberOfColumns() != self._nameOfColumns.size:
+            df = DataFrame(matrix.getMatrix())
+        else:
+            df = DataFrame(matrix.getMatrix(), columns = self._nameOfColumns)
+
         df.to_csv(newFilePath, index=False)

@@ -1,6 +1,7 @@
-from . import matrix
+from matrix.matrix import Matrix
 
 
-class RandomProjectionMatrix(matrix.Matrix):
-    def __init__(self, dimension, dimensionTarget, k):
-        self._k = k
+class RandomProjectionMatrix():
+    @staticmethod
+    def generate(dimension, dimensionTarget, k):
+        pass
