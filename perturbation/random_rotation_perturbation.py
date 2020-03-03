@@ -1,8 +1,6 @@
 from .perturbation import Perturbation
-from matrix.matrix import Matrix
 from matrix.random_rotation_matrix import RandomRotationMatrix
 from matrix.random_translation_matrix import RandomTranslationMatrix
-from numpy import array
 
 
 class RandomRotationPerturbation(Perturbation):
