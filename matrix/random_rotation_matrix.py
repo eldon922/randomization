@@ -1,4 +1,4 @@
-from matrix.matrix import Matrix
+from .matrix import Matrix
 from scipy.stats import special_ortho_group
 
 

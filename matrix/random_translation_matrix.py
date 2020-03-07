@@ -1,4 +1,4 @@
-from matrix.matrix import Matrix
+from .matrix import Matrix
 from numpy import identity, append, ones
 from random import randint
 

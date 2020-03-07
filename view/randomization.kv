@@ -1,0 +1,51 @@
+#:kivy 2.0.0
+
+<MainMenu>
+    cols: 1
+    size: root.width, root.height
+    BrowseFile
+    PerturbationTabs
+
+
+<BrowseFile>
+    cols: 3
+    size_hint: (root.width, 0.075)
+
+    file_path: file_path
+
+    Image:
+        source: 'view/assets/browse.jpg'
+        size_hint: (0.1, root.height)
+    Label:
+        id: file_path
+        text: "No file selected"
+        size: self.texture_size
+        text_size: self.size
+        halign: 'left'
+    Button:
+        text: "Browse"
+        size_hint: (0.2, root.height)
+        on_press: root.browse()
+
+
+<PerturbationTabs>
+    do_default_tab: False
+    tab_width: root.width * 0.3
+
+    TabbedPanelItem:
+        text: 'Welcome'
+        Label:
+            text: 'Welcome tab content area'
+
+
+    TabbedPanelItem:
+        text: 'Random Rotation Perturbation'
+        Label:
+            text: 'Random Rotation Perturbation tab content area'
+
+
+
+    TabbedPanelItem:
+        text: 'Random Projection Perturbation'
+        Label:
+            text: 'Random Projection Perturbation tab content area'
