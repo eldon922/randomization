@@ -1,6 +1,13 @@
+import ntpath
+
 from numpy import array
 from pandas import DataFrame, read_csv
 from matrix.matrix import Matrix
+
+
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
 
 
 class CSVPreprocessor:
@@ -32,4 +39,4 @@ class CSVPreprocessor:
         else:
             df = DataFrame(matrix.getMatrix(), columns=self._nameOfColumns)
 
-        df.to_csv(newFilePath, index=False)
+        df.to_csv(newFilePath + "/projection_randomized_" + path_leaf(self._filePath), index=False)

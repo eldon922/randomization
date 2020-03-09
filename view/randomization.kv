@@ -3,49 +3,116 @@
 <MainMenu>
     cols: 1
     size: root.width, root.height
-    BrowseFile
-    PerturbationTabs
+
+    load_file_path: load_file_path
+    save_file_path: save_file_path
+
+    dimension_label: dimension_label
+    epsilon_label: epsilon_label
+    dimension_value: dimension_value
+    epsilon_value: epsilon_value
+
+    technique_spinner: technique_spinner
 
 
-<BrowseFile>
-    cols: 3
-    size_hint: (root.width, 0.075)
+    GridLayout:
+        cols: 3
+        size_hint: (root.width, 0.075)
 
-    file_path: file_path
-
-    Image:
-        source: 'view/assets/browse.jpg'
-        size_hint: (0.1, root.height)
-    Label:
-        id: file_path
-        text: "No file selected"
-        size: self.texture_size
-        text_size: self.size
-        halign: 'left'
-    Button:
-        text: "Browse"
-        size_hint: (0.2, root.height)
-        on_press: root.browse()
-
-
-<PerturbationTabs>
-    do_default_tab: False
-    tab_width: root.width * 0.3
-
-    TabbedPanelItem:
-        text: 'Welcome'
+        Image:
+            source: 'view/assets/browse.jpg'
+            size_hint: (0.1, root.height)
         Label:
-            text: 'Welcome tab content area'
+            id: load_file_path
+            text: "No file selected"
+            size: self.texture_size
+            text_size: self.size
+            halign: 'left'
+        Button:
+            text: "Browse"
+            size_hint: (0.2, root.height)
+            on_release: root.browse_load()
 
 
-    TabbedPanelItem:
-        text: 'Random Rotation Perturbation'
+
+    GridLayout:
+        cols: 1
+        size_hint: (root.width, 0.075)
+        Spinner:
+            id: technique_spinner
+            size_hint: (root.width, root.height)
+            text: 'Random Projection Perturbation'
+            values: 'Random Projection Perturbation', 'Random Rotation Perturbation'
+            on_text: root.on_technique_spinner_select(self.text)
+
+
+
+    GridLayout:
+        cols: 8
+        size_hint: (root.width, 0.075)
+        spacing: 15
+
+        Image:
+            source: 'view/assets/save.jpeg'
+            size_hint: (0.1, root.height)
         Label:
-            text: 'Random Rotation Perturbation tab content area'
-
-
-
-    TabbedPanelItem:
-        text: 'Random Projection Perturbation'
+            id: save_file_path
+            text: "No file selected"
+            size: self.texture_size
+            text_size: self.size
+            halign: 'left'
+        Button:
+            text: "Browse"
+            size_hint: (0.2, root.height)
+            on_release: root.browse_save()
         Label:
-            text: 'Random Projection Perturbation tab content area'
+            id: dimension_label
+            size_hint: (0.2, root.height)
+            text: "Dimension"
+        TextInput:
+            id: dimension_value
+            size_hint: (0.1, root.height)
+        Label:
+            id: epsilon_label
+            size_hint: (0.15, root.height)
+            text: "Epsilon"
+        TextInput:
+            id: epsilon_value
+            size_hint: (0.1, root.height)
+        Button:
+            text: "Randomize and Save"
+            size_hint: (0.4, root.height)
+            on_release: root.randomize()
+
+
+
+    BoxLayout:
+        orientation: "horizontal"
+        BoxLayout:
+            orientation: "vertical"
+            canvas.before:
+                Color:
+                    rgba: .5, .5, .5, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+
+
+        BoxLayout:
+            orientation: "vertical"
+            canvas.before:
+                Color:
+                    rgba: .5, .5, .5, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+
+
+        BoxLayout:
+            orientation: "vertical"
+            canvas.before:
+                Color:
+                    rgba: .5, .5, .5, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
