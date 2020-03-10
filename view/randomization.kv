@@ -57,7 +57,7 @@
             size_hint: (0.1, root.height)
         Label:
             id: save_file_path
-            text: "No file selected"
+            text: "No folder selected"
             size: self.texture_size
             text_size: self.size
             halign: 'left'
@@ -116,3 +116,21 @@
                 Line:
                     width: 2
                     rectangle: self.x, self.y, self.width, self.height
+
+<LoadFilePopup>
+    title: 'WARNING!'
+    size_hint: (None, None)
+    size: (400, 200)
+    auto_dismiss: False
+
+    text_label: text_label
+
+    GridLayout:
+        cols: 1
+        Label:
+            id: text_label
+            text: "Please select dataset file first!"
+        Button:
+            size_hint: (root.width, 0.5)
+            text: "Ok"
+            on_release: root.dismiss()

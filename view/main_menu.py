@@ -1,7 +1,10 @@
 from tkinter import Tk, filedialog
 
 from kivy.properties import ObjectProperty
+from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 
 from perturbation.random_rotation_perturbation import RandomRotationPerturbation
 from preprocessor.csv_preprocessor import CSVPreprocessor
@@ -57,6 +60,12 @@ class MainMenu(GridLayout):
             hide_widget(self.epsilon_value, False)
 
     def randomize(self):
+        if self.load_file_path.text == 'No file selected':
+            LoadFilePopup().open()
+            return
+        elif self.save_file_path.text == 'No folder selected':
+            LoadFilePopup().open(False)
+            return
 
         csv_preprocessor = CSVPreprocessor()
         csv_preprocessor.readCSV(self.load_file_path.text)
@@ -73,3 +82,15 @@ class MainMenu(GridLayout):
             rotation_randomizer.perturbDataset()
             csv_preprocessor.matrixToCSV(rotation_randomizer.getPerturbedDataset(), self.save_file_path.text)
             print("randomize rotation!")
+
+
+class LoadFilePopup(Popup):
+    text_label = ObjectProperty(None)
+
+    def open(self, load=True, *largs, **kwargs):
+        if load:
+            self.text_label.text = "Please select dataset file first!"
+        else:
+            self.text_label.text = "Please select folder path for save the result first!"
+        super().open()
+
