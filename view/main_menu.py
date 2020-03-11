@@ -1,10 +1,10 @@
+from threading import Thread
 from tkinter import Tk, filedialog
 
 from kivy.properties import ObjectProperty
-from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
 from kivy.uix.popup import Popup
+from kivy.uix.progressbar import ProgressBar
 
 from perturbation.random_rotation_perturbation import RandomRotationPerturbation
 from preprocessor.csv_preprocessor import CSVPreprocessor
@@ -59,32 +59,45 @@ class MainMenu(GridLayout):
             hide_widget(self.epsilon_label, False)
             hide_widget(self.epsilon_value, False)
 
-    def randomize(self):
+    def randomize_button_action(self):
         if self.load_file_path.text == 'No file selected':
-            LoadFilePopup().open()
+            PathFileErrorPopup().open()
             return
         elif self.save_file_path.text == 'No folder selected':
-            LoadFilePopup().open(False)
+            PathFileErrorPopup().open(False)
             return
 
+        self.loading_popup = LoadingPopup()
+        self.loading_popup.open()
+
+        randomize_thread = Thread(target=self.randomize)
+        randomize_thread.start()
+
+    def randomize(self):
+        self.loading_popup.progress(10)
         csv_preprocessor = CSVPreprocessor()
         csv_preprocessor.readCSV(self.load_file_path.text)
-
+        self.loading_popup.progress(30)
         csv_preprocessor.dropColumn('subject')
         csv_preprocessor.dropColumn('Activity')
-
+        self.loading_popup.progress(40)
         dataset = csv_preprocessor.csvToMatrix()
-
+        self.loading_popup.progress(50)
         if self.technique_spinner.text == "Random Projection Perturbation":
             print("randomize projection!")
         else:
             rotation_randomizer = RandomRotationPerturbation(dataset)
+            self.loading_popup.progress(60)
             rotation_randomizer.perturbDataset()
+            self.loading_popup.progress(90)
             csv_preprocessor.matrixToCSV(rotation_randomizer.getPerturbedDataset(), self.save_file_path.text)
+            self.loading_popup.progress(100)
             print("randomize rotation!")
 
+        self.loading_popup.dismiss()
 
-class LoadFilePopup(Popup):
+
+class PathFileErrorPopup(Popup):
     text_label = ObjectProperty(None)
 
     def open(self, load=True, *largs, **kwargs):
@@ -94,3 +107,12 @@ class LoadFilePopup(Popup):
             self.text_label.text = "Please select folder path for save the result first!"
         super().open()
 
+
+class LoadingPopup(Popup):
+
+    progress_bar = ObjectProperty(None)
+    progress_label = ObjectProperty(None)
+
+    def progress(self, value):
+        self.progress_bar.value = value
+        self.progress_label.text = str(value) + "%"

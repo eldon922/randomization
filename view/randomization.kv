@@ -82,7 +82,7 @@
         Button:
             text: "Randomize and Save"
             size_hint: (0.4, root.height)
-            on_release: root.randomize()
+            on_release: root.randomize_button_action()
 
 
 
@@ -117,7 +117,7 @@
                     width: 2
                     rectangle: self.x, self.y, self.width, self.height
 
-<LoadFilePopup>
+<PathFileErrorPopup>
     title: 'WARNING!'
     size_hint: (None, None)
     size: (400, 200)
@@ -134,3 +134,20 @@
             size_hint: (root.width, 0.5)
             text: "Ok"
             on_release: root.dismiss()
+
+<LoadingPopup>
+    title: 'Random Rotation Perturbation'
+    size_hint: (None, None)
+    size: (400, 200)
+    auto_dismiss: False
+
+    progress_bar: progress_bar
+    progress_label: progress_label
+    GridLayout:
+        cols: 1
+        Label:
+            id: progress_label
+            text: "0%"
+        ProgressBar:
+            id: progress_bar
+            max: 100
