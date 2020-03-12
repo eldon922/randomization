@@ -72,6 +72,7 @@
         TextInput:
             id: dimension_value
             size_hint: (0.1, root.height)
+            input_filter: 'int'
         Label:
             id: epsilon_label
             size_hint: (0.15, root.height)
@@ -79,6 +80,7 @@
         TextInput:
             id: epsilon_value
             size_hint: (0.1, root.height)
+            input_filter: 'float'
         Button:
             text: "Randomize and Save"
             size_hint: (0.4, root.height)
@@ -117,10 +119,10 @@
                     width: 2
                     rectangle: self.x, self.y, self.width, self.height
 
-<PathFileErrorPopup>
+<ErrorPopup>
     title: 'WARNING!'
     size_hint: (None, None)
-    size: (400, 200)
+    size: (500, 200)
     auto_dismiss: False
 
     text_label: text_label
@@ -136,7 +138,7 @@
             on_release: root.dismiss()
 
 <LoadingPopup>
-    title: 'Random Rotation Perturbation'
+    title: 'Random Projection Perturbation'
     size_hint: (None, None)
     size: (400, 200)
     auto_dismiss: False

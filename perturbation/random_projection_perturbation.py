@@ -29,8 +29,11 @@ class RandomProjectionPerturbation(Perturbation):
         self._k = johnson_lindenstrauss_min_dim(
             self._dataset.getNumberOfRows(), self._epsilon)
 
-    def checkMinDim(self):
-        return self._k < self._dataset.getNumberOfColumns() and self._k <= self._dimensionTarget
+    def checkK(self):
+        return self._k < self._dataset.getNumberOfColumns()
+
+    def checkDimensionTarget(self):
+        return self._k <= self._dimensionTarget <= self._dataset.getNumberOfColumns()
 
     def setDimensionTarget(self, dimensionTarget):
         self._dimensionTarget = dimensionTarget
