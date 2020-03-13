@@ -4,7 +4,7 @@ from matrix.matrix import Matrix
 
 
 class RandomProjectionPerturbation(Perturbation):
-    def __init__(self, dataset, epsilon, dimensionTarget):
+    def __init__(self, dataset, epsilon, dimensionTarget = 0):
         super().__init__(dataset)
         self._epsilon = epsilon
         self._dimensionTarget = dimensionTarget
@@ -17,10 +17,10 @@ class RandomProjectionPerturbation(Perturbation):
         self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
 
     def getEpsilon(self):
-        return self.epsilon
+        return self._epsilon
 
     def setEpsilon(self, epsilon):
-        self.epsilon = epsilon
+        self._epsilon = epsilon
 
     def getK(self):
         return self._k

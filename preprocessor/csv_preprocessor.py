@@ -1,4 +1,5 @@
 import ntpath
+import os
 
 from numpy import array
 from pandas import DataFrame, read_csv
@@ -17,6 +18,7 @@ class CSVPreprocessor:
 
         self._matrix = None
         self._nameOfColumns = None
+        self._resultFilePath = None
 
     def dropColumn(self, columnName):
         del self._dataCSV[columnName]
@@ -33,10 +35,22 @@ class CSVPreprocessor:
     def getNameOfColumns(self):
         return self._nameOfColumns
 
+    def getFileName(self):
+        return path_leaf(self._filePath)
+
+    def getResultFileName(self):
+        return path_leaf(self._resultFilePath)
+
     def matrixToCSV(self, matrix, newFilePath):
         if matrix.getNumberOfColumns() != self._nameOfColumns.size:
+            self._resultFilePath = newFilePath + "/projection_randomized_" + path_leaf(self._filePath)
             df = DataFrame(matrix.getMatrix())
         else:
+            self._resultFilePath = newFilePath + "/rotation_randomized_" + path_leaf(self._filePath)
             df = DataFrame(matrix.getMatrix(), columns=self._nameOfColumns)
 
-        df.to_csv(newFilePath + "/projection_randomized_" + path_leaf(self._filePath), index=False)
+        if os.path.isfile(self._resultFilePath):
+            return True
+
+        df.to_csv(self._resultFilePath, index=False)
+        return False

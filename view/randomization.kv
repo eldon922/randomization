@@ -11,9 +11,12 @@
     epsilon_label: epsilon_label
     dimension_value: dimension_value
     epsilon_value: epsilon_value
+    calculate_k_button: calculate_k_button
 
     technique_spinner: technique_spinner
 
+    dataset_description_layout: dataset_description_layout
+    randomization_result_description_layout: randomization_result_description_layout
 
     GridLayout:
         cols: 3
@@ -31,7 +34,7 @@
         Button:
             text: "Browse"
             size_hint: (0.2, root.height)
-            on_release: root.browse_load()
+            on_release: root.browse_load_button_action()
 
 
 
@@ -48,7 +51,7 @@
 
 
     GridLayout:
-        cols: 8
+        cols: 9
         size_hint: (root.width, 0.075)
         spacing: 15
 
@@ -81,6 +84,12 @@
             id: epsilon_value
             size_hint: (0.1, root.height)
             input_filter: 'float'
+            on_text:
+        Button:
+            id: calculate_k_button
+            text: "Calculate K"
+            size_hint: (0.25, root.height)
+            on_release: root.calculate_k_button_action()
         Button:
             text: "Randomize and Save"
             size_hint: (0.4, root.height)
@@ -98,6 +107,17 @@
                 Line:
                     width: 2
                     rectangle: self.x, self.y, self.width, self.height
+            Label:
+                text: "Dataset Description"
+                size_hint: (1, 0.2)
+                text_size: self.size
+                halign: "center"
+                valign: "top"
+                padding: (20, 20)
+
+            BoxLayout:
+                id: dataset_description_layout
+                orientation: "vertical"
 
 
         BoxLayout:
@@ -108,16 +128,17 @@
                 Line:
                     width: 2
                     rectangle: self.x, self.y, self.width, self.height
+            Label:
+                text: "Randomization Result Description"
+                size_hint: (1, 0.2)
+                text_size: self.size
+                halign: "center"
+                valign: "top"
+                padding: (20, 20)
 
-
-        BoxLayout:
-            orientation: "vertical"
-            canvas.before:
-                Color:
-                    rgba: .5, .5, .5, 1
-                Line:
-                    width: 2
-                    rectangle: self.x, self.y, self.width, self.height
+            BoxLayout:
+                id: randomization_result_description_layout
+                orientation: "vertical"
 
 <ErrorPopup>
     title: 'WARNING!'
@@ -153,3 +174,10 @@
         ProgressBar:
             id: progress_bar
             max: 100
+
+<DescriptionLabel>
+    size_hint: (1, 0.14)
+    text_size: self.size
+    halign: "left"
+    valign: "top"
+    padding: (20, 0)
