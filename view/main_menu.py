@@ -56,7 +56,7 @@ class MainMenu(GridLayout):
         self.k_label.change_value(str(randomizer.getK()))
 
         if not randomizer.checkK():
-            ErrorPopup().open("K value is bigger than the dimension of dataset! Configure the epsilon variable!")
+            ErrorPopup().open("Nilai K lebih besar dari dimensi dataset!\nMohon mengganti nilai variabel Epsilon!")
             return False
 
         return True
@@ -67,7 +67,7 @@ class MainMenu(GridLayout):
             return
 
         self.loading_popup = LoadingPopup()
-        self.loading_popup.title = "Load File"
+        self.loading_popup.title = "Memuat Dokumen"
         self.loading_popup.open()
         self.loading_popup.progress(40)
 
@@ -84,13 +84,13 @@ class MainMenu(GridLayout):
         self.dataset_description_layout.clear_widgets()
 
         self.loading_popup.progress(60)
-        self.dataset_description_layout.add_widget(DescriptionLabel("File Name", self.csv_preprocessor.getFileName()))
+        self.dataset_description_layout.add_widget(DescriptionLabel("Nama Dokumen", self.csv_preprocessor.getFileName()))
         self.dataset_description_layout.add_widget(
-            DescriptionLabel("Number of Rows", str(self.dataset.getNumberOfRows())))
+            DescriptionLabel("Jumlah Baris", str(self.dataset.getNumberOfRows())))
         self.loading_popup.progress(80)
         self.dataset_description_layout.add_widget(
-            DescriptionLabel("Number of Columns", str(self.dataset.getNumberOfColumns())))
-        self.k_label = DescriptionLabel("K Value", "Not calculated yet.")
+            DescriptionLabel("Jumlah Kolom", str(self.dataset.getNumberOfColumns())))
+        self.k_label = DescriptionLabel("Nilai K", "Belum dihitung")
         self.dataset_description_layout.add_widget(self.k_label)
         if self.technique_spinner.text == "Random Rotation Perturbation":
             hide_widget(self.k_label)
@@ -127,45 +127,45 @@ class MainMenu(GridLayout):
             hide_widget(self.calculate_k_button, False)
 
     def load_file_path_empty(self):
-        if self.load_file_path.text == 'No file selected':
-            ErrorPopup().open("Please select dataset file first!")
+        if self.load_file_path.text == "Belum ada dokumen CSV yang dipilih untuk dirandomisasi":
+            ErrorPopup().open("Mohon memilih dataset(dokumen CSV) terlebih dahulu!")
             return True
         else:
             return False
 
     def save_file_path_empty(self):
-        if self.save_file_path.text == 'No folder selected':
-            ErrorPopup().open("Please select folder path for save the result first!")
+        if self.save_file_path.text == "Belum ada direktori yang dipilih untuk menyimpan hasil randomisasi":
+            ErrorPopup().open("Mohon memilih direktori untuk menyimpan hasil randomisasi terlebih dahulu!")
             return True
         else:
             return False
 
     def epsilon_not_valid(self):
         if self.epsilon_value.text == "":
-            ErrorPopup().open("Please decide epsilon variable first!")
+            ErrorPopup().open("Mohon menentukan nilai variabel Epsilon terlebih dahulu!")
             return True
 
         try:
             float(self.epsilon_value.text)
         except ValueError:
-            ErrorPopup().open("You don't fill appropriate number for epsilon variable!")
+            ErrorPopup().open("Anda tidak memasukan nilai(bilangan desimal) dengan benar untuk variabel Epsilon!\nMohon periksa kembali dengan teliti!")
             return True
 
         if not 1 > float(self.epsilon_value.text) > 0:
-            ErrorPopup().open("Epsilon variable need to be in range from 0 and 1, inclusively!")
+            ErrorPopup().open("Nilai variabel Epsilon wajib berada pada rentang nilai lebih dari 0 dan kurang dari 1!")
             return True
 
         return False
 
     def dimension_target_not_valid(self):
         if self.dimension_value.text == "":
-            ErrorPopup().open("Please decide dimension target first!")
+            ErrorPopup().open("Mohon menentukan target dimensi terlebih dahulu!")
             return True
 
         try:
             int(self.dimension_value.text)
         except ValueError:
-            ErrorPopup().open("You don't fill appropriate number for dimension target!")
+            ErrorPopup().open("Anda tidak memasukan nilai(bilangan bulat) dengan benar untuk target dimensi!\nMohon periksa kembali dengan teliti!")
             return True
 
         return False
@@ -189,8 +189,18 @@ class MainMenu(GridLayout):
     def randomize(self):
         self.loading_popup.progress(30)
 
-        if self.technique_spinner.text == "Random Projection Perturbation":
+        if self.technique_spinner.text == "Random Rotation Perturbation":
             randomizer = RandomRotationPerturbation(self.dataset)
+            self.loading_popup.progress(50)
+            try:
+                randomizer.perturbDataset()
+            except TypeError:
+                self.loading_popup.dismiss()
+                ErrorPopup().open(
+                    "Ada nilai yang tidak bersifat numerik pada dataset! Semua nilai harus berupa numerik!")
+                return
+            self.loading_popup.progress(80)
+        else:
             randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
                                                       int(self.dimension_value.text))
 
@@ -201,8 +211,9 @@ class MainMenu(GridLayout):
             if not randomizer.checkDimensionTarget():
                 self.loading_popup.dismiss()
                 ErrorPopup().open(
-                    "Dimension target must be more equal than K and less equal than the dimension of dataset! "
-                    "Configure the dimension target!")
+                    "Nilai dari target dimensi wajib berada pada rentang nilai lebih besar dari atau sama dengan K "
+                    "dan lebih kecil dari atau sama dengan dimensi dataset yang ingin dirandomisasi! Configure the "
+                    "dimension target!")
                 return
             self.loading_popup.progress(50)
             try:
@@ -210,43 +221,33 @@ class MainMenu(GridLayout):
             except TypeError:
                 self.loading_popup.dismiss()
                 ErrorPopup().open(
-                    "There is non-numeric value in the dataset! It's must be numeric!")
-                return
-            self.loading_popup.progress(80)
-            print("randomize projection!")
-        else:
-            randomizer = RandomRotationPerturbation(self.dataset)
-            self.loading_popup.progress(50)
-            try:
-                randomizer.perturbDataset()
-            except TypeError:
-                self.loading_popup.dismiss()
-                ErrorPopup().open(
-                    "There is non-numeric value in the dataset! It's must be numeric!")
+                    "Ada nilai yang tidak bersifat numerik pada dataset! Semua nilai harus berupa numerik!")
                 return
             self.loading_popup.progress(80)
 
         if self.csv_preprocessor.matrixToCSV(randomizer.getPerturbedDataset(), self.save_file_path.text):
             self.loading_popup.dismiss()
             ErrorPopup().open(
-                "You already have file with name " + self.csv_preprocessor.getResultFileName() + "! Please delete it.")
+                "Sudah ada file yang bernama " + self.csv_preprocessor.getResultFileName() + " pada direktori yang "
+                                                                                             "dipilih!\nMohon dihapus "
+                                                                                             "terlebih dahulu!")
             return
 
         self.randomization_result_description_layout.clear_widgets()
         self.randomization_result_description_layout.add_widget(
-            DescriptionLabel("File Name", self.csv_preprocessor.getResultFileName()))
+            DescriptionLabel("Nama File", self.csv_preprocessor.getResultFileName()))
         self.randomization_result_description_layout.add_widget(
-            DescriptionLabel("Number of Columns", str(randomizer.getPerturbedDataset().getNumberOfColumns())))
+            DescriptionLabel("Jumlah Kolom", str(randomizer.getPerturbedDataset().getNumberOfColumns())))
         if self.technique_spinner.text == "Random Projection Perturbation":
             self.randomization_result_description_layout.add_widget(
-                DescriptionLabel("Using Epsilon Value", str(randomizer.getEpsilon())))
+                DescriptionLabel("Nilai variabel epsilon yang dipakai", str(randomizer.getEpsilon())))
             self.randomization_result_description_layout.add_widget(
-                DescriptionLabel("Using K Value", str(randomizer.getK())))
+                DescriptionLabel("nilai K yang dipakai", str(randomizer.getK())))
         self.randomization_result_description_layout.add_widget(Label())
 
         self.loading_popup.progress(100)
         self.loading_popup.dismiss()
-        ErrorPopup().open(self.technique_spinner.text + " has been successfully applied to dataset!")
+        ErrorPopup().open(self.technique_spinner.text + " berhasil diterapkan pada dataset yang dipilih!")
 
 
 class ErrorPopup(Popup):
