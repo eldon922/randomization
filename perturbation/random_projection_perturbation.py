@@ -14,7 +14,7 @@ class RandomProjectionPerturbation(Perturbation):
 
     def perturbDataset(self):
         transformer = GaussianRandomProjection(n_components=self._dimensionTarget, eps=self._epsilon)
-        self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getMatrix()))
+        self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getRawMatrix()))
 
     def getEpsilon(self):
         return self._epsilon

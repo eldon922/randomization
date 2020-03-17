@@ -14,9 +14,9 @@ class RandomTranslationMatrix:
     @staticmethod
     def addAColumnOfOnes(matrix):
         matrixTransposed = matrix.transpose()
-        return Matrix(
-            append(matrixTransposed.getMatrix(), ones((1, matrixTransposed.getNumberOfColumns())), axis=0)).transpose()
+        return Matrix(append(matrixTransposed.getRawMatrix(), ones((1, matrixTransposed.getNumberOfColumns())),
+                      axis=0)).transpose()
 
     @staticmethod
     def removeLastColumn(matrix):
-        return Matrix(matrix.transpose().getMatrix()[:-1].T)
+        return Matrix(matrix.transpose().getRawMatrix()[:-1].T)

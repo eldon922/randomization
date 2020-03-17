@@ -44,10 +44,10 @@ class CSVPreprocessor:
     def matrixToCSV(self, matrix, newFilePath):
         if matrix.getNumberOfColumns() != self._nameOfColumns.size:
             self._resultFilePath = newFilePath + "/projection_randomized_" + path_leaf(self._filePath)
-            df = DataFrame(matrix.getMatrix())
+            df = DataFrame(matrix.getRawMatrix())
         else:
             self._resultFilePath = newFilePath + "/rotation_randomized_" + path_leaf(self._filePath)
-            df = DataFrame(matrix.getMatrix(), columns=self._nameOfColumns)
+            df = DataFrame(matrix.getRawMatrix(), columns=self._nameOfColumns)
 
         if os.path.isfile(self._resultFilePath):
             return True

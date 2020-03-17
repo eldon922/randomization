@@ -12,18 +12,16 @@ class Matrix:
         return self._matrix.shape[1]
 
     def multiply(self, multiplierMatrix):
-        self._matrix = self._matrix @ multiplierMatrix.getMatrix()
-        return self
+        return Matrix(self._matrix @ multiplierMatrix.getRawMatrix())
 
     def get(self, row, col):
         return self._matrix[row][col]
 
-    def getMatrix(self):
+    def getRawMatrix(self):
         return self._matrix
 
     def determinant(self):
         return det(self._matrix)
 
     def transpose(self):
-        self._matrix = self._matrix.T
-        return self
+        return Matrix(self._matrix.T)

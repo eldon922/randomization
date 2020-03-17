@@ -40,6 +40,10 @@ class MainMenu(GridLayout):
     dataset_description_layout = ObjectProperty(None)
     randomization_result_description_layout = ObjectProperty(None)
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.on_technique_spinner_select("Random Rotation Perturbation")
+
     def calculate_k_button_action(self):
         if self.load_file_path_empty() or self.epsilon_not_valid():
             return
@@ -169,8 +173,8 @@ class MainMenu(GridLayout):
     def randomize_button_action(self):
         if self.load_file_path_empty() or self.save_file_path_empty():
             return
-        if self.technique_spinner.text == "Random Projection Perturbation" and (self.dimension_target_not_valid()
-                                                                                or self.epsilon_not_valid()):
+        if self.technique_spinner.text == "Random Projection Perturbation" and (self.epsilon_not_valid()
+                                                                                or self.dimension_target_not_valid()):
             return
 
         self.loading_popup = LoadingPopup()
@@ -186,7 +190,7 @@ class MainMenu(GridLayout):
         self.loading_popup.progress(30)
 
         if self.technique_spinner.text == "Random Projection Perturbation":
-            self.dataset = self.csv_preprocessor.csvToMatrix()
+            randomizer = RandomRotationPerturbation(self.dataset)
             randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
                                                       int(self.dimension_value.text))
 
@@ -211,7 +215,6 @@ class MainMenu(GridLayout):
             self.loading_popup.progress(80)
             print("randomize projection!")
         else:
-            self.dataset = self.csv_preprocessor.csvToMatrix()
             randomizer = RandomRotationPerturbation(self.dataset)
             self.loading_popup.progress(50)
             try:
@@ -222,7 +225,6 @@ class MainMenu(GridLayout):
                     "There is non-numeric value in the dataset! It's must be numeric!")
                 return
             self.loading_popup.progress(80)
-            print("randomize rotation!")
 
         if self.csv_preprocessor.matrixToCSV(randomizer.getPerturbedDataset(), self.save_file_path.text):
             self.loading_popup.dismiss()
@@ -242,7 +244,6 @@ class MainMenu(GridLayout):
                 DescriptionLabel("Using K Value", str(randomizer.getK())))
         self.randomization_result_description_layout.add_widget(Label())
 
-        del randomizer
         self.loading_popup.progress(100)
         self.loading_popup.dismiss()
         ErrorPopup().open(self.technique_spinner.text + " has been successfully applied to dataset!")
