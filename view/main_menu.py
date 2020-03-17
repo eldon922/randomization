@@ -186,6 +186,7 @@ class MainMenu(GridLayout):
         self.loading_popup.progress(30)
 
         if self.technique_spinner.text == "Random Projection Perturbation":
+            self.dataset = self.csv_preprocessor.csvToMatrix()
             randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
                                                       int(self.dimension_value.text))
 
@@ -196,7 +197,8 @@ class MainMenu(GridLayout):
             if not randomizer.checkDimensionTarget():
                 self.loading_popup.dismiss()
                 ErrorPopup().open(
-                    "Dimension target must be between K and the dimension of dataset! Configure the dimension target!")
+                    "Dimension target must be more equal than K and less equal than the dimension of dataset! "
+                    "Configure the dimension target!")
                 return
             self.loading_popup.progress(50)
             try:
@@ -209,6 +211,7 @@ class MainMenu(GridLayout):
             self.loading_popup.progress(80)
             print("randomize projection!")
         else:
+            self.dataset = self.csv_preprocessor.csvToMatrix()
             randomizer = RandomRotationPerturbation(self.dataset)
             self.loading_popup.progress(50)
             try:

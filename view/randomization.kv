@@ -69,14 +69,6 @@
             size_hint: (0.2, root.height)
             on_release: root.browse_save()
         Label:
-            id: dimension_label
-            size_hint: (0.2, root.height)
-            text: "Dimension"
-        TextInput:
-            id: dimension_value
-            size_hint: (0.1, root.height)
-            input_filter: 'int'
-        Label:
             id: epsilon_label
             size_hint: (0.15, root.height)
             text: "Epsilon"
@@ -90,6 +82,14 @@
             text: "Calculate K"
             size_hint: (0.25, root.height)
             on_release: root.calculate_k_button_action()
+        Label:
+            id: dimension_label
+            size_hint: (0.2, root.height)
+            text: "Dimension"
+        TextInput:
+            id: dimension_value
+            size_hint: (0.1, root.height)
+            input_filter: 'int'
         Button:
             text: "Randomize and Save"
             size_hint: (0.4, root.height)
@@ -143,7 +143,7 @@
 <ErrorPopup>
     title: 'WARNING!'
     size_hint: (None, None)
-    size: (500, 200)
+    size: (400, 200)
     auto_dismiss: False
 
     text_label: text_label
@@ -153,6 +153,9 @@
         Label:
             id: text_label
             text: "Please select dataset file first!"
+            text_size: self.width, None
+            size_hint: 1, None
+            halign: "center"
         Button:
             size_hint: (root.width, 0.5)
             text: "Ok"
