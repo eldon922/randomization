@@ -3,6 +3,7 @@
 <MainMenu>
     cols: 1
     size: root.width, root.height
+    spacing: 3
 
     load_file_path: load_file_path
     save_file_path: save_file_path
@@ -17,6 +18,8 @@
 
     dataset_description_layout: dataset_description_layout
     randomization_result_description_layout: randomization_result_description_layout
+    guide_label: guide_label
+
 
     GridLayout:
         cols: 2
@@ -101,7 +104,50 @@
 
 
     BoxLayout:
-        orientation: "horizontal"
+        orientation: "vertical"
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                canvas.before:
+                    Color:
+                        rgba: .5, .5, .5, 1
+                    Line:
+                        width: 2
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    text: "Deskripsi Dataset"
+                    size_hint: (1, 0.4)
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    padding: (20, 20)
+
+                BoxLayout:
+                    id: dataset_description_layout
+                    orientation: "vertical"
+
+
+            BoxLayout:
+                orientation: "vertical"
+                canvas.before:
+                    Color:
+                        rgba: .5, .5, .5, 1
+                    Line:
+                        width: 2
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    text: "Deskripsi Hasil Randomisasi"
+                    size_hint: (1, 0.4)
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    padding: (20, 20)
+
+                BoxLayout:
+                    id: randomization_result_description_layout
+                    orientation: "vertical"
+
         BoxLayout:
             orientation: "vertical"
             canvas.before:
@@ -111,41 +157,26 @@
                     width: 2
                     rectangle: self.x, self.y, self.width, self.height
             Label:
-                text: "Deskripsi Dataset"
-                size_hint: (1, 0.2)
+                text: "Petunjuk Pengunaan"
+                size_hint: (1, 0.25)
                 text_size: self.size
                 halign: "center"
                 valign: "top"
                 padding: (20, 20)
 
             BoxLayout:
-                id: dataset_description_layout
                 orientation: "vertical"
-
-
-        BoxLayout:
-            orientation: "vertical"
-            canvas.before:
-                Color:
-                    rgba: .5, .5, .5, 1
-                Line:
-                    width: 2
-                    rectangle: self.x, self.y, self.width, self.height
-            Label:
-                text: "Deskripsi Hasil Randomisasi"
-                size_hint: (1, 0.2)
-                text_size: self.size
-                halign: "center"
-                valign: "top"
-                padding: (20, 20)
-
-            BoxLayout:
-                id: randomization_result_description_layout
-                orientation: "vertical"
+                Label:
+                    id: guide_label
+                    size_hint: (1, 0.14)
+                    text_size: self.size
+                    halign: "left"
+                    valign: "top"
+                    padding: (20, 0)
 
 
 
-<ErrorPopup>
+<WarningPopup>
     title: 'PERHATIAN!'
     size_hint: (None, None)
     size: (400, 200)
@@ -188,7 +219,7 @@
             max: 100
 
 <DescriptionLabel>
-    size_hint: (1, 0.14)
+    size_hint: (1, 0.5)
     text_size: self.size
     halign: "left"
     valign: "top"
