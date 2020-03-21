@@ -1,0 +1,226 @@
+#:kivy 2.0.0
+
+<MainMenu>
+    cols: 1
+    size: root.width, root.height
+    spacing: 3
+
+    load_file_path: load_file_path
+    save_file_path: save_file_path
+
+    dimension_label: dimension_label
+    epsilon_label: epsilon_label
+    dimension_value: dimension_value
+    epsilon_value: epsilon_value
+    calculate_k_button: calculate_k_button
+
+    technique_spinner: technique_spinner
+
+    dataset_description_layout: dataset_description_layout
+    randomization_result_description_layout: randomization_result_description_layout
+    guide_label: guide_label
+
+
+    GridLayout:
+        cols: 2
+        size_hint: (root.width, 0.075)
+        spacing: 5
+        GridLayout:
+            cols: 3
+            Image:
+                source: 'view/assets/browse.jpg'
+                size_hint: (0.1, root.height)
+            Label:
+                id: load_file_path
+                text: "Belum ada dokumen CSV yang dipilih untuk dirandomisasi"
+                size: self.texture_size
+                text_size: self.size
+                halign: 'left'
+            Button:
+                text: "Pilih Dokumen CSV"
+                size_hint: (0.45, root.height)
+                on_release: root.browse_load_button_action()
+        GridLayout:
+            cols: 3
+            Image:
+                source: 'view/assets/save.jpeg'
+                size_hint: (0.1, root.height)
+            Label:
+                id: save_file_path
+                text: "Belum ada direktori yang dipilih untuk menyimpan hasil randomisasi"
+                size: self.texture_size
+                text_size: self.size
+                halign: 'left'
+            Button:
+                text: "Pilih Direktori"
+                size_hint: (0.3, root.height)
+                on_release: root.browse_save()
+
+
+
+    GridLayout:
+        cols: 1
+        size_hint: (root.width, 0.075)
+        Spinner:
+            id: technique_spinner
+            size_hint: (root.width, root.height)
+            text: 'Random Rotation Perturbation'
+            values: 'Random Rotation Perturbation', 'Random Projection Perturbation'
+            on_text: root.on_technique_spinner_select(self.text)
+
+
+
+    GridLayout:
+        cols: 6
+        size_hint: (root.width, 0.075)
+        spacing: 10
+        Label:
+            id: epsilon_label
+            size_hint: (0.07, root.height)
+            text: "Epsilon"
+        TextInput:
+            id: epsilon_value
+            size_hint: (0.05, root.height)
+            input_filter: 'float'
+            on_text:
+        Button:
+            id: calculate_k_button
+            text: "Hitung Nilai K"
+            size_hint: (0.1, root.height)
+            on_release: root.calculate_k_button_action()
+        Label:
+            id: dimension_label
+            size_hint: (0.1, root.height)
+            text: "Target Dimensi"
+        TextInput:
+            id: dimension_value
+            size_hint: (0.05, root.height)
+            input_filter: 'int'
+        Button:
+            text: "Randomisasi dan Simpan"
+            size_hint: (0.4, root.height)
+            on_release: root.randomize_button_action()
+
+
+
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            orientation: "horizontal"
+            BoxLayout:
+                orientation: "vertical"
+                canvas.before:
+                    Color:
+                        rgba: .5, .5, .5, 1
+                    Line:
+                        width: 2
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    text: "Deskripsi Dataset"
+                    size_hint: (1, 0.4)
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    padding: (20, 20)
+
+                BoxLayout:
+                    id: dataset_description_layout
+                    orientation: "vertical"
+
+
+            BoxLayout:
+                orientation: "vertical"
+                canvas.before:
+                    Color:
+                        rgba: .5, .5, .5, 1
+                    Line:
+                        width: 2
+                        rectangle: self.x, self.y, self.width, self.height
+                Label:
+                    text: "Deskripsi Hasil Randomisasi"
+                    size_hint: (1, 0.4)
+                    text_size: self.size
+                    halign: "center"
+                    valign: "top"
+                    padding: (20, 20)
+
+                BoxLayout:
+                    id: randomization_result_description_layout
+                    orientation: "vertical"
+
+        BoxLayout:
+            orientation: "vertical"
+            canvas.before:
+                Color:
+                    rgba: .5, .5, .5, 1
+                Line:
+                    width: 2
+                    rectangle: self.x, self.y, self.width, self.height
+            Label:
+                text: "Petunjuk Pengunaan"
+                size_hint: (1, 0.25)
+                text_size: self.size
+                halign: "center"
+                valign: "top"
+                padding: (20, 20)
+
+            BoxLayout:
+                orientation: "vertical"
+                Label:
+                    id: guide_label
+                    size_hint: (1, 0.14)
+                    text_size: self.size
+                    halign: "left"
+                    valign: "top"
+                    padding: (20, 0)
+
+
+
+<WarningPopup>
+    title: 'PERHATIAN!'
+    size_hint: (None, None)
+    size: (400, 200)
+    auto_dismiss: False
+
+    text_label: text_label
+
+    GridLayout:
+        cols: 1
+        Label:
+            id: text_label
+            text_size: self.width, None
+            size_hint: 1, None
+            halign: "center"
+        Button:
+            size_hint: (root.width, 0.5)
+            text: "Ok"
+            on_release: root.dismiss()
+
+<LoadingPopup>
+    title: 'Random Projection Perturbation'
+    size_hint: (None, None)
+    size: (400, 200)
+    auto_dismiss: False
+
+    progress_bar: progress_bar
+    progress_label: progress_label
+    GridLayout:
+        cols: 1
+        Image:
+            source: 'view/assets/loading.gif'
+            anim_delay: 0.1
+            mipmap: True
+            allow_stretch: True
+        Label:
+            id: progress_label
+            text: "0%"
+        ProgressBar:
+            id: progress_bar
+            max: 100
+
+<DescriptionLabel>
+    size_hint: (1, 0.5)
+    text_size: self.size
+    halign: "left"
+    valign: "top"
+    padding: (20, 0)
