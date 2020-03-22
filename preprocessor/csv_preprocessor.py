@@ -1,5 +1,4 @@
 import ntpath
-import os
 
 from numpy import array
 from pandas import DataFrame, read_csv
@@ -38,19 +37,14 @@ class CSVPreprocessor:
     def getFileName(self):
         return path_leaf(self._filePath)
 
-    def getResultFileName(self):
-        return path_leaf(self._resultFilePath)
-
     def matrixToCSV(self, matrix, newFilePath):
-        if matrix.getNumberOfColumns() != self._nameOfColumns.size:
-            self._resultFilePath = newFilePath + "/projection_" + path_leaf(self._filePath)
-            df = DataFrame(matrix.getRawMatrix())
-        else:
-            self._resultFilePath = newFilePath + "/rotation_" + path_leaf(self._filePath)
-            df = DataFrame(matrix.getRawMatrix(), columns=self._nameOfColumns)
+        try:
+            if matrix.getNumberOfColumns() != self._nameOfColumns.size:
+                df = DataFrame(matrix.getRawMatrix())
+            else:
+                df = DataFrame(matrix.getRawMatrix(), columns=self._nameOfColumns)
 
-        if os.path.isfile(self._resultFilePath):
+            df.to_csv(newFilePath, index=False)
+            return False
+        except:
             return True
-
-        df.to_csv(self._resultFilePath, index=False)
-        return False

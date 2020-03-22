@@ -6,7 +6,6 @@
     spacing: 3
 
     load_file_path: load_file_path
-    save_file_path: save_file_path
 
     dimension_label: dimension_label
     epsilon_label: epsilon_label
@@ -22,39 +21,22 @@
 
 
     GridLayout:
-        cols: 2
+        cols: 3
         size_hint: (root.width, 0.075)
         spacing: 5
-        GridLayout:
-            cols: 3
-            Image:
-                source: 'view/assets/browse.jpg'
-                size_hint: (0.1, root.height)
-            Label:
-                id: load_file_path
-                text: "Belum ada dokumen CSV yang dipilih untuk dirandomisasi"
-                size: self.texture_size
-                text_size: self.size
-                halign: 'left'
-            Button:
-                text: "Pilih Dokumen CSV"
-                size_hint: (0.45, root.height)
-                on_release: root.browse_load_button_action()
-        GridLayout:
-            cols: 3
-            Image:
-                source: 'view/assets/save.jpeg'
-                size_hint: (0.1, root.height)
-            Label:
-                id: save_file_path
-                text: "Belum ada direktori yang dipilih untuk menyimpan hasil randomisasi"
-                size: self.texture_size
-                text_size: self.size
-                halign: 'left'
-            Button:
-                text: "Pilih Direktori"
-                size_hint: (0.3, root.height)
-                on_release: root.browse_save()
+        Image:
+            source: 'view/assets/browse.jpg'
+            size_hint: (0.1, root.height)
+        Label:
+            id: load_file_path
+            text: "Belum ada dokumen CSV yang dipilih untuk dirandomisasi"
+            size: self.texture_size
+            text_size: self.size
+            halign: 'left'
+        Button:
+            text: "Pilih Dokumen CSV"
+            size_hint: (0.25, root.height)
+            on_release: root.browse_load_button_action()
 
 
 
