@@ -4,7 +4,7 @@ from matrix.matrix import Matrix
 
 
 class RandomProjectionPerturbation(Perturbation):
-    def __init__(self, dataset, epsilon, dimensionTarget = 0):
+    def __init__(self, dataset, epsilon, dimensionTarget=0, randomProjectionMatrix=False):
         super().__init__(dataset)
         self._epsilon = epsilon
         self._dimensionTarget = dimensionTarget
@@ -12,15 +12,14 @@ class RandomProjectionPerturbation(Perturbation):
         self._k = None
         self.calculateK()
 
+        self._transformer = self.GaussianRandomProjection(n_components=dimensionTarget, eps=epsilon,
+                                                          randomProjectionMatrix=randomProjectionMatrix)
+
     def perturbDataset(self):
-        transformer = GaussianRandomProjection(n_components=self._dimensionTarget, eps=self._epsilon)
-        self._perturbedDataset = Matrix(transformer.fit_transform(self._dataset.getRawMatrix()))
+        self._perturbedDataset = Matrix(self._transformer.fit_transform(self._dataset.getRawMatrix()))
 
     def getEpsilon(self):
-        return self._epsilon
-
-    def setEpsilon(self, epsilon):
-        self._epsilon = epsilon
+        return self._transformer.eps
 
     def getK(self):
         return self._k
@@ -33,10 +32,13 @@ class RandomProjectionPerturbation(Perturbation):
         return self._k < self._dataset.getNumberOfColumns()
 
     def checkDimensionTarget(self):
-        return self._k <= self._dimensionTarget <= self._dataset.getNumberOfColumns()
+        return self._k <= self._dimensionTarget < self._dataset.getNumberOfColumns()
 
-    def setDimensionTarget(self, dimensionTarget):
-        self._dimensionTarget = dimensionTarget
+    class GaussianRandomProjection(GaussianRandomProjection):
+        def __init__(self, n_components, eps, randomProjectionMatrix):
+            super().__init__(n_components=n_components, eps=eps)
+            self._randomProjectionMatrix = randomProjectionMatrix
 
-    def getDimensionTarget(self):
-        return self._dimensionTarget
+        def _make_random_matrix(self, n_components, n_features):
+            # TODO kasih if?
+            return self._randomProjectionMatrix.getRawMatrix()

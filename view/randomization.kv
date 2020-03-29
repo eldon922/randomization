@@ -3,7 +3,7 @@
 <MainMenu>
     cols: 1
     size: root.width, root.height
-    spacing: 3
+    spacing: 10
 
     load_file_path: load_file_path
 
@@ -17,12 +17,15 @@
 
     dataset_description_layout: dataset_description_layout
     randomization_result_description_layout: randomization_result_description_layout
-    guide_label: guide_label
+
+    load_matrix_path: load_matrix_path
+
+#    guide_label: guide_label
 
 
     GridLayout:
         cols: 3
-        size_hint: (root.width, 0.075)
+        size_hint: (root.width, 0.09)
         spacing: 5
         Image:
             source: 'view/assets/browse.jpg'
@@ -42,7 +45,7 @@
 
     GridLayout:
         cols: 1
-        size_hint: (root.width, 0.075)
+        size_hint: (root.width, 0.09)
         Spinner:
             id: technique_spinner
             size_hint: (root.width, root.height)
@@ -51,10 +54,32 @@
             on_text: root.on_technique_spinner_select(self.text)
 
 
+    GridLayout:
+        cols: 4
+        size_hint: (root.width, 0.09)
+        spacing: 5
+        Image:
+            source: 'view/assets/browse.jpg'
+            size_hint: (0.1, root.height)
+        Label:
+            id: load_matrix_path
+            text: "Pilih matriks yang dipakai"
+            size: self.texture_size
+            text_size: self.size
+            halign: 'left'
+        Button:
+            text: "Buat dan Simpan Matriks"
+            size_hint: (0.3, root.height)
+            on_release: root.create_save_matrix_button_action()
+        Button:
+            text: "Import Matriks"
+            size_hint: (0.2, root.height)
+            on_release: root.import_matrix_button_action()
+
 
     GridLayout:
         cols: 6
-        size_hint: (root.width, 0.075)
+        size_hint: (root.width, 0.09)
         spacing: 10
         Label:
             id: epsilon_label
@@ -64,7 +89,6 @@
             id: epsilon_value
             size_hint: (0.05, root.height)
             input_filter: 'float'
-            on_text:
         Button:
             id: calculate_k_button
             text: "Hitung Nilai K"
@@ -130,31 +154,31 @@
                     id: randomization_result_description_layout
                     orientation: "vertical"
 
-        BoxLayout:
-            orientation: "vertical"
-            canvas.before:
-                Color:
-                    rgba: .5, .5, .5, 1
-                Line:
-                    width: 2
-                    rectangle: self.x, self.y, self.width, self.height
-            Label:
-                text: "Petunjuk Pengunaan"
-                size_hint: (1, 0.25)
-                text_size: self.size
-                halign: "center"
-                valign: "top"
-                padding: (20, 20)
-
-            BoxLayout:
-                orientation: "vertical"
-                Label:
-                    id: guide_label
-                    size_hint: (1, 0.14)
-                    text_size: self.size
-                    halign: "left"
-                    valign: "top"
-                    padding: (20, 0)
+#        BoxLayout:
+#            orientation: "vertical"
+#            canvas.before:
+#                Color:
+#                    rgba: .5, .5, .5, 1
+#                Line:
+#                    width: 2
+#                    rectangle: self.x, self.y, self.width, self.height
+#            Label:
+#                text: "Petunjuk Pengunaan"
+#                size_hint: (1, 0.25)
+#                text_size: self.size
+#                halign: "center"
+#                valign: "top"
+#                padding: (20, 20)
+#
+#            BoxLayout:
+#                orientation: "vertical"
+#                Label:
+#                    id: guide_label
+#                    size_hint: (1, 0.14)
+#                    text_size: self.size
+#                    halign: "left"
+#                    valign: "top"
+#                    padding: (20, 0)
 
 
 

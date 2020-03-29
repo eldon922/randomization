@@ -7,9 +7,14 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from plyer import filechooser
 
+from matrix.random_projection_matrix import RandomProjectionMatrix
+from matrix.random_rotation_matrix import RandomRotationMatrix
+from matrix.random_translation_matrix import RandomTranslationMatrix
 from perturbation.random_projection_perturbation import RandomProjectionPerturbation
 from perturbation.random_rotation_perturbation import RandomRotationPerturbation
 from preprocessor.csv_preprocessor import CSVPreprocessor
+from preprocessor.projection_matrix_preprocessor import ProjectionMatrixPreprocessor
+from preprocessor.rotation_matrix_preprocessor import RotationMatrixPreprocessor
 
 
 def hide_widget(wid, do_hide=True):
@@ -36,19 +41,22 @@ class MainMenu(GridLayout):
     dataset_description_layout = ObjectProperty(None)
     randomization_result_description_layout = ObjectProperty(None)
 
-    guide_label = ObjectProperty(None)
+    load_matrix_path = ObjectProperty(None)
+
+    # guide_label = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.on_technique_spinner_select("Random Rotation Perturbation")
-        self.guide_label.text = '''1. Pilih dataset yang berupa dokumen CSV dengan menekan tombol "Pilih Dokumen CSV". Ada 2 persyaratan yang harus dipenuhi yaitu baris pertama pada dokumen adalah nama-nama setiap kolom dan nilai pada dataset semuanya wajib berjenis numerik
-2. Pilih teknik yang ingin digunakan dengan menekan tombol yang bertulisan nama teknik yang sekarang dipilih. Defaultnya adalah "Random Rotation Perturbation"
-3. Apabila teknik yang dipilih adalah "Random Projection Perturbation", lakukan langkah berikut dahulu.
-    - Tentukan nilai Epsilon yang diinginkan
-    - Tekan tombol "Hitung Nilai K" untuk menghitung nilai K pada dataset dengan Epsilon yang telah ditentukan
-    - Tentukan target dimensi yang diinginkan
-4. Tekan tombol "Randomisasi dan Simpan"
-5. Pilih direktori penyimpanan yang diinginkan untuk menyimpan hasil randomisasi'''
+
+    #         self.guide_label.text = '''1. Pilih dataset yang berupa dokumen CSV dengan menekan tombol "Pilih Dokumen CSV". Ada 2 persyaratan yang harus dipenuhi yaitu baris pertama pada dokumen adalah nama-nama setiap kolom dan nilai pada dataset semuanya wajib berjenis numerik
+    # 2. Pilih teknik yang ingin digunakan dengan menekan tombol yang bertulisan nama teknik yang sekarang dipilih. Defaultnya adalah "Random Rotation Perturbation"
+    # 3. Apabila teknik yang dipilih adalah "Random Projection Perturbation", lakukan langkah berikut dahulu.
+    #     - Tentukan nilai Epsilon yang diinginkan
+    #     - Tekan tombol "Hitung Nilai K" untuk menghitung nilai K pada dataset dengan Epsilon yang telah ditentukan
+    #     - Tentukan target dimensi yang diinginkan
+    # 4. Tekan tombol "Randomisasi dan Simpan"
+    # 5. Pilih direktori penyimpanan yang diinginkan untuk menyimpan hasil randomisasi'''
 
     def calculate_k_button_action(self):
         if self.load_file_path_empty() or self.epsilon_not_valid():
@@ -69,7 +77,8 @@ class MainMenu(GridLayout):
 
     def browse_load_button_action(self):
         # self.path = filedialog.askopenfilename()
-        self.path = filechooser.open_file(title="Pilih dokumen CSV..", filters=[("Comma-separated Values", "*.csv")])
+        self.path = filechooser.open_file(title="Pilih dataset berbentuk dokumen CSV..",
+                                          filters=[("Comma-separated Values", "*.csv")])
         if len(self.path) == 0:
             return
 
@@ -94,6 +103,10 @@ class MainMenu(GridLayout):
 
         self.randomization_result_description_layout.clear_widgets()
         self.load_file_path.text = self.path[0]
+        self.load_matrix_path.text = "Pilih matriks yang dipakai"
+        self.randomTranslationMatrix = None
+        self.randomRotationMatrix = None
+        self.randomProjectionMatrix = None
 
         self.dataset_description_layout.clear_widgets()
 
@@ -113,7 +126,8 @@ class MainMenu(GridLayout):
         self.loading_popup.dismiss()
 
     def browse_save(self):
-        path = filechooser.save_file(title="Simpan hasil berbentuk dokumen CSV..", filters=[("Comma-separated Values", "*.csv")])
+        path = filechooser.save_file(title="Simpan hasil berbentuk dokumen CSV..",
+                                     filters=[("Comma-separated Values", "*.csv")])
 
         if len(path) != 0:
             if pathlib.Path(path[0]).suffix == ".csv":
@@ -125,6 +139,10 @@ class MainMenu(GridLayout):
 
     def on_technique_spinner_select(self, text):
         self.randomization_result_description_layout.clear_widgets()
+        self.load_matrix_path.text = "Pilih matriks yang dipakai"
+        self.randomTranslationMatrix = None
+        self.randomRotationMatrix = None
+        self.randomProjectionMatrix = None
         if text == "Random Rotation Perturbation":
             hide_widget(self.dimension_label)
             hide_widget(self.dimension_value)
@@ -153,6 +171,13 @@ class MainMenu(GridLayout):
         else:
             return False
 
+    def load_matrix_path_empty(self):
+        if self.load_matrix_path.text == "Pilih matriks yang dipakai":
+            WarningPopup().open("Mohon memilih matriks(dokumen CSV) terlebih dahulu!")
+            return True
+        else:
+            return False
+
     def epsilon_not_valid(self):
         if self.epsilon_value.text == "":
             WarningPopup().open("Mohon menentukan nilai variabel Epsilon terlebih dahulu!")
@@ -167,7 +192,8 @@ class MainMenu(GridLayout):
             return True
 
         if not 1 > float(self.epsilon_value.text) > 0:
-            WarningPopup().open("Nilai variabel Epsilon wajib berada pada rentang nilai lebih dari 0 dan kurang dari 1!")
+            WarningPopup().open(
+                "Nilai variabel Epsilon wajib berada pada rentang nilai lebih dari 0 dan kurang dari 1!")
             return True
 
         return False
@@ -187,9 +213,87 @@ class MainMenu(GridLayout):
 
         return False
 
+    def create_save_matrix_button_action(self):
+        if self.load_file_path_empty():
+            return
+
+        if self.technique_spinner.text == "Random Rotation Perturbation":
+            matrix_path = self.browse_save()
+            if not matrix_path:
+                return
+            self.randomRotationMatrix = RandomRotationMatrix.generate(self.dataset.getNumberOfColumns())
+            self.randomTranslationMatrix = RandomTranslationMatrix.generate(self.dataset.getNumberOfColumns() + 1)
+            RotationMatrixPreprocessor.save_to_csv(matrix_path, self.randomRotationMatrix, self.randomTranslationMatrix)
+        else:
+            if self.epsilon_not_valid() or self.dimension_target_not_valid():
+                # self.loading_popup.dismiss()
+                return
+
+            randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
+                                                      int(self.dimension_value.text))
+
+            if not self.calculate_and_check_k(randomizer):
+                # self.loading_popup.dismiss()
+                return
+
+            if not randomizer.checkDimensionTarget():
+                # self.loading_popup.dismiss()
+                WarningPopup().open(
+                    "Nilai dari target dimensi wajib berada pada rentang nilai lebih besar dari atau sama dengan K "
+                    "dan lebih kecil dari atau sama dengan dimensi dataset yang ingin dirandomisasi!\nMohon mengganti "
+                    "target dimensi!")
+                return
+            self.randomProjectionMatrix = RandomProjectionMatrix.generate(self.dataset.getNumberOfColumns(),
+                                                                          int(self.dimension_value.text),
+                                                                          float(self.epsilon_value.text))
+
+            matrix_path = self.browse_save()
+            if not matrix_path:
+                return
+
+            ProjectionMatrixPreprocessor.save_to_csv(matrix_path, self.randomProjectionMatrix)
+
+        self.load_matrix_path.text = matrix_path
+
+    def import_matrix_button_action(self):
+        if self.load_file_path_empty():
+            return
+
+        matrix_path = filechooser.open_file(title="Pilih matriks berbentuk dokumen CSV..",
+                                            filters=[("Comma-separated Values", "*.csv")])
+
+        if len(matrix_path) == 0:
+            return
+
+        if self.technique_spinner.text == "Random Rotation Perturbation":
+            try:
+                rotationMatrixPreprocessor = RotationMatrixPreprocessor()
+                if not rotationMatrixPreprocessor.read_from_csv(matrix_path[0], self.dataset.getNumberOfColumns()):
+                    WarningPopup().open(
+                        "Matriks yang dipilih tidak sesuai dengan dataset!")
+                    return
+
+                self.randomTranslationMatrix = rotationMatrixPreprocessor.getRandomTranslationMatrix()
+                self.randomRotationMatrix = rotationMatrixPreprocessor.getRandomRotationMatrix()
+            except:
+                WarningPopup().open("Dokumen CSV yang dimasukkan tidak sesuai dengan persyaratan!")
+                # self.loading_popup.dismiss()
+                return
+        else:
+            projectionMatrixPreprocessor = ProjectionMatrixPreprocessor()
+            if not projectionMatrixPreprocessor.read_from_csv(matrix_path[0], self.dataset.getNumberOfColumns()):
+                WarningPopup().open(
+                    "Matriks yang dipilih tidak sesuai dengan dataset!")
+                return
+
+            self.randomProjectionMatrix = projectionMatrixPreprocessor.getProjectionMatrix()
+            self.dimension_value.text = str(self.randomProjectionMatrix.getNumberOfRows())
+
+        self.load_matrix_path.text = matrix_path[0]
+
     def randomize_button_action(self):
         self.randomization_result_description_layout.clear_widgets()
-        if self.load_file_path_empty():
+        if self.load_file_path_empty() or self.load_matrix_path_empty():
             return
         if self.technique_spinner.text == "Random Projection Perturbation" and (self.epsilon_not_valid()
                                                                                 or self.dimension_target_not_valid()):
@@ -204,13 +308,13 @@ class MainMenu(GridLayout):
         randomize_thread = Thread(target=self.randomize)
         randomize_thread.start()
 
-
     def randomize(self):
         try:
             self.loading_popup.progress(30)
 
             if self.technique_spinner.text == "Random Rotation Perturbation":
-                randomizer = RandomRotationPerturbation(self.dataset)
+                randomizer = RandomRotationPerturbation(self.dataset, self.randomTranslationMatrix,
+                                                        self.randomRotationMatrix)
                 self.loading_popup.progress(50)
                 try:
                     randomizer.perturbDataset()
@@ -226,8 +330,19 @@ class MainMenu(GridLayout):
                                                                                              "berupa numerik!"))
                     return
             else:
+                if self.randomProjectionMatrix.getNumberOfRows() != int(self.dimension_value.text):
+                    self.loading_popup.dismiss()
+                    WarningPopup().open("Dimensi matriks tidak sama dengan dimensi target yang diinginkan!")
+                    self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
+                    self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
+                                                                                             "Dimensi matriks tidak "
+                                                                                             "sama dengan dimensi "
+                                                                                             "target yang "
+                                                                                             "diinginkan!"))
+                    return
+
                 randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
-                                                          int(self.dimension_value.text))
+                                                          int(self.dimension_value.text), self.randomProjectionMatrix)
 
                 if not self.calculate_and_check_k(randomizer):
                     self.loading_popup.dismiss()
@@ -276,7 +391,8 @@ class MainMenu(GridLayout):
                 self.loading_popup.dismiss()
                 WarningPopup().open("Penyimpanan dokumen dibatalkan!")
                 self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
-                self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan", "Penyimpanan dokumen dibatalkan!"))
+                self.randomization_result_description_layout.add_widget(
+                    DescriptionLabel("Alasan", "Penyimpanan dokumen dibatalkan!"))
                 return
 
             if self.csv_preprocessor.matrixToCSV(randomizer.getPerturbedDataset(), save_path):
@@ -286,7 +402,7 @@ class MainMenu(GridLayout):
                 self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
                 self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
                                                                                          "Sudah ada dokumen yang mempunyai nama yang sama yaitu " + save_path + " dan dibuka oleh program lain!\nMohon ditutup "
-                                                                                                                                                                      "terlebih dahulu!"))
+                                                                                                                                                                "terlebih dahulu!"))
                 return
 
             self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "BERHASIL"))

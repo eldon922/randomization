@@ -1,16 +1,13 @@
 from .perturbation import Perturbation
-from matrix.random_rotation_matrix import RandomRotationMatrix
 from matrix.random_translation_matrix import RandomTranslationMatrix
 
 
 class RandomRotationPerturbation(Perturbation):
-    def __init__(self, dataset):
+    def __init__(self, dataset, randomTranslationMatrix, randomRotationMatrix):
         super().__init__(dataset)
 
-        self._randomTranslationMatrix = None
-        self.generateRandomTranslationMatrix()
-        self._randomRotationMatrix = None
-        self.generateRandomRotationMatrix()
+        self._randomTranslationMatrix = randomTranslationMatrix
+        self._randomRotationMatrix = randomRotationMatrix
 
     def perturbDataset(self):
         dataset_with_ones = RandomTranslationMatrix.addAColumnOfOnes(self._dataset)
@@ -23,11 +20,5 @@ class RandomRotationPerturbation(Perturbation):
     def getRandomTranslationMatrix(self):
         return self._randomTranslationMatrix
 
-    def generateRandomTranslationMatrix(self):
-        self._randomTranslationMatrix = RandomTranslationMatrix.generate(self._dataset.getNumberOfColumns() + 1)
-
     def getRandomRotationMatrix(self):
         return self._randomRotationMatrix
-
-    def generateRandomRotationMatrix(self):
-        self._randomRotationMatrix = RandomRotationMatrix.generate(self._dataset.getNumberOfColumns())
