@@ -293,11 +293,16 @@ class MainMenu(GridLayout):
 
     def randomize_button_action(self):
         self.randomization_result_description_layout.clear_widgets()
+
         if self.load_file_path_empty() or self.load_matrix_path_empty():
             return
-        if self.technique_spinner.text == "Random Projection Perturbation" and (self.epsilon_not_valid()
-                                                                                or self.dimension_target_not_valid()):
-            return
+
+        if self.technique_spinner.text == "Random Projection Perturbation":
+            if self.epsilon_not_valid() or self.dimension_target_not_valid():
+                return
+            elif self.randomProjectionMatrix.getNumberOfRows() != int(self.dimension_value.text):
+                WarningPopup().open("Dimensi matriks tidak sama dengan dimensi target yang diinginkan!")
+                return
 
         self.loading_popup = LoadingPopup()
         self.loading_popup.title = self.technique_spinner.text
@@ -330,17 +335,6 @@ class MainMenu(GridLayout):
                                                                                              "berupa numerik!"))
                     return
             else:
-                if self.randomProjectionMatrix.getNumberOfRows() != int(self.dimension_value.text):
-                    self.loading_popup.dismiss()
-                    WarningPopup().open("Dimensi matriks tidak sama dengan dimensi target yang diinginkan!")
-                    self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
-                    self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
-                                                                                             "Dimensi matriks tidak "
-                                                                                             "sama dengan dimensi "
-                                                                                             "target yang "
-                                                                                             "diinginkan!"))
-                    return
-
                 randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
                                                           int(self.dimension_value.text), self.randomProjectionMatrix)
 
