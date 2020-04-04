@@ -223,7 +223,16 @@ class MainMenu(GridLayout):
                 return
             self.randomRotationMatrix = RandomRotationMatrix.generate(self.dataset.getNumberOfColumns())
             self.randomTranslationMatrix = RandomTranslationMatrix.generate(self.dataset.getNumberOfColumns() + 1)
-            RotationMatrixPreprocessor.save_to_csv(matrix_path, self.randomRotationMatrix, self.randomTranslationMatrix)
+
+            if RotationMatrixPreprocessor.save_to_csv(matrix_path, self.randomRotationMatrix, self.randomTranslationMatrix):
+                self.loading_popup.dismiss()
+                WarningPopup().open(
+                    "Tolong menutup dokumen yang dipilih yaitu " + matrix_path)
+                self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
+                self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
+                                                                                         "Sudah ada dokumen yang mempunyai nama yang sama yaitu " + matrix_path + " dan dibuka oleh program lain!\nMohon ditutup "
+                                                                                                                                                                  "terlebih dahulu!"))
+                return
         else:
             if self.epsilon_not_valid() or self.dimension_target_not_valid():
                 # self.loading_popup.dismiss()
@@ -251,7 +260,15 @@ class MainMenu(GridLayout):
             if not matrix_path:
                 return
 
-            ProjectionMatrixPreprocessor.save_to_csv(matrix_path, self.randomProjectionMatrix)
+            if ProjectionMatrixPreprocessor.save_to_csv(matrix_path, self.randomProjectionMatrix):
+                self.loading_popup.dismiss()
+                WarningPopup().open(
+                    "Tolong menutup dokumen yang dipilih yaitu " + matrix_path)
+                self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
+                self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
+                                                                                         "Sudah ada dokumen yang mempunyai nama yang sama yaitu " + matrix_path + " dan dibuka oleh program lain!\nMohon ditutup "
+                                                                                                                                                                "terlebih dahulu!"))
+                return
 
         self.load_matrix_path.text = matrix_path
 

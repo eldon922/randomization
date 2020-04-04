@@ -1,3 +1,5 @@
+from pandas import DataFrame
+
 from preprocessor.csv_preprocessor import CSVPreprocessor
 
 
@@ -20,5 +22,9 @@ class ProjectionMatrixPreprocessor:
 
     @staticmethod
     def save_to_csv(path, projectionMatrix):
-        csv_preprocessor = CSVPreprocessor()
-        csv_preprocessor.matrixToCSV(projectionMatrix, path)
+        try:
+            df = DataFrame(projectionMatrix.getRawMatrix())
+            df.to_csv(path, index=False)
+            return False
+        except:
+            return True
