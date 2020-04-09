@@ -104,7 +104,10 @@ class MainMenu(GridLayout):
 
         self.randomization_result_description_layout.clear_widgets()
         self.load_file_path.text = self.path[0]
-        self.load_matrix_path.text = "Pilih matriks yang dipakai"
+        if self.technique_spinner.text == "Random Rotation Perturbation":
+            self.load_matrix_path.text = "Pilih rotasi matriks yang ingin dipakai"
+        else:
+            self.load_matrix_path.text = "Pilih proyeksi matriks yang ingin dipakai"
         self.randomTranslationMatrix = None
         self.randomRotationMatrix = None
         self.randomProjectionMatrix = None
@@ -140,11 +143,11 @@ class MainMenu(GridLayout):
 
     def on_technique_spinner_select(self, text):
         self.randomization_result_description_layout.clear_widgets()
-        self.load_matrix_path.text = "Pilih matriks yang dipakai"
         self.randomTranslationMatrix = None
         self.randomRotationMatrix = None
         self.randomProjectionMatrix = None
         if text == "Random Rotation Perturbation":
+            self.load_matrix_path.text = "Pilih rotasi matriks yang ingin dipakai"
             hide_widget(self.dimension_label)
             hide_widget(self.dimension_value)
             hide_widget(self.epsilon_label)
@@ -155,6 +158,7 @@ class MainMenu(GridLayout):
                 pass
             hide_widget(self.calculate_k_button)
         else:
+            self.load_matrix_path.text = "Pilih proyeksi matriks yang ingin dipakai"
             hide_widget(self.dimension_label, False)
             hide_widget(self.dimension_value, False)
             hide_widget(self.epsilon_label, False)
@@ -173,7 +177,7 @@ class MainMenu(GridLayout):
             return False
 
     def load_matrix_path_empty(self):
-        if self.load_matrix_path.text == "Pilih matriks yang dipakai":
+        if self.load_matrix_path.text == "Pilih rotasi matriks yang ingin dipakai" or self.load_matrix_path.text == "Pilih proyeksi matriks yang ingin dipakai":
             WarningPopup().open("Mohon memilih matriks(dokumen CSV) terlebih dahulu!")
             return True
         else:
