@@ -1,5 +1,6 @@
 import pathlib
 from threading import Thread
+from time import time
 
 from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
@@ -221,17 +222,16 @@ class MainMenu(GridLayout):
             matrix_path = self.browse_save()
             if not matrix_path:
                 return
+
+            start_time = time()
             self.randomRotationMatrix = RandomRotationMatrix.generate(self.dataset.getNumberOfColumns())
             self.randomTranslationMatrix = RandomTranslationMatrix.generate(self.dataset.getNumberOfColumns() + 1)
+            self.create_matrix_time = time() - start_time
 
             if RotationMatrixPreprocessor.save_to_csv(matrix_path, self.randomRotationMatrix, self.randomTranslationMatrix):
                 self.loading_popup.dismiss()
                 WarningPopup().open(
                     "Tolong menutup dokumen yang dipilih yaitu " + matrix_path)
-                self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
-                self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
-                                                                                         "Sudah ada dokumen yang mempunyai nama yang sama yaitu " + matrix_path + " dan dibuka oleh program lain!\nMohon ditutup "
-                                                                                                                                                                  "terlebih dahulu!"))
                 return
         else:
             if self.epsilon_not_valid() or self.dimension_target_not_valid():
@@ -252,9 +252,12 @@ class MainMenu(GridLayout):
                     "dan lebih kecil dari atau sama dengan dimensi dataset yang ingin dirandomisasi!\nMohon mengganti "
                     "target dimensi!")
                 return
+
+            start_time = time()
             self.randomProjectionMatrix = RandomProjectionMatrix.generate(self.dataset.getNumberOfColumns(),
                                                                           int(self.dimension_value.text),
                                                                           float(self.epsilon_value.text))
+            self.create_matrix_time = time() - start_time
 
             matrix_path = self.browse_save()
             if not matrix_path:
@@ -264,15 +267,12 @@ class MainMenu(GridLayout):
                 self.loading_popup.dismiss()
                 WarningPopup().open(
                     "Tolong menutup dokumen yang dipilih yaitu " + matrix_path)
-                self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
-                self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
-                                                                                         "Sudah ada dokumen yang mempunyai nama yang sama yaitu " + matrix_path + " dan dibuka oleh program lain!\nMohon ditutup "
-                                                                                                                                                                "terlebih dahulu!"))
                 return
 
         self.load_matrix_path.text = matrix_path
 
     def import_matrix_button_action(self):
+        self.create_matrix_time = 0
         if self.load_file_path_empty():
             return
 
@@ -335,11 +335,15 @@ class MainMenu(GridLayout):
             self.loading_popup.progress(30)
 
             if self.technique_spinner.text == "Random Rotation Perturbation":
+                start_time = time()
                 randomizer = RandomRotationPerturbation(self.dataset, self.randomTranslationMatrix,
                                                         self.randomRotationMatrix)
+                initialize_time = time() - start_time
                 self.loading_popup.progress(50)
                 try:
+                    start_time = time()
                     randomizer.perturbDataset()
+                    perturb_time = time() - start_time
                 except TypeError:
                     self.loading_popup.dismiss()
                     WarningPopup().open(
@@ -352,8 +356,10 @@ class MainMenu(GridLayout):
                                                                                              "berupa numerik!"))
                     return
             else:
+                start_time = time()
                 randomizer = RandomProjectionPerturbation(self.dataset, float(self.epsilon_value.text),
                                                           int(self.dimension_value.text), self.randomProjectionMatrix)
+                initialize_time = time() - start_time
 
                 if not self.calculate_and_check_k(randomizer):
                     self.loading_popup.dismiss()
@@ -380,7 +386,9 @@ class MainMenu(GridLayout):
                     return
                 self.loading_popup.progress(50)
                 try:
+                    start_time = time()
                     randomizer.perturbDataset()
+                    perturb_time = time() - start_time
                 except TypeError:
                     self.loading_popup.dismiss()
                     WarningPopup().open(
@@ -426,6 +434,8 @@ class MainMenu(GridLayout):
                     DescriptionLabel("Nilai variabel epsilon yang dipakai", str(randomizer.getEpsilon())))
                 self.randomization_result_description_layout.add_widget(
                     DescriptionLabel("nilai K yang dipakai", str(randomizer.getK())))
+            self.randomization_result_description_layout.add_widget(
+                DescriptionLabel("Waktu Eksekusi", str((initialize_time + perturb_time + self.create_matrix_time) % 60) + " detik"))
 
             self.loading_popup.progress(100)
             self.loading_popup.dismiss()
