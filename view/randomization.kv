@@ -36,7 +36,7 @@
             size: self.texture_size
             text_size: self.size
             halign: 'left'
-        Button:
+        HoverButton:
             text: "Pilih Dokumen CSV"
             size_hint: (0.25, root.height)
             on_release: root.browse_load_button_action()
@@ -47,6 +47,7 @@
         cols: 1
         size_hint: (root.width, 0.09)
         Spinner:
+            color: 1,1,1,1
             id: technique_spinner
             size_hint: (root.width, root.height)
             text: 'Random Rotation Perturbation'
@@ -67,11 +68,11 @@
             size: self.texture_size
             text_size: self.size
             halign: 'left'
-        Button:
+        HoverButton:
             text: "Buat dan Simpan Matriks"
             size_hint: (0.3, root.height)
             on_release: root.create_save_matrix_button_action()
-        Button:
+        HoverButton:
             text: "Import Matriks"
             size_hint: (0.2, root.height)
             on_release: root.import_matrix_button_action()
@@ -89,7 +90,7 @@
             id: epsilon_value
             size_hint: (0.05, root.height)
             input_filter: 'float'
-        Button:
+        HoverButton:
             id: calculate_k_button
             text: "Hitung Nilai K"
             size_hint: (0.1, root.height)
@@ -102,7 +103,7 @@
             id: dimension_value
             size_hint: (0.05, root.height)
             input_filter: 'int'
-        Button:
+        HoverButton:
             text: "Randomisasi dan Simpan"
             size_hint: (0.4, root.height)
             on_release: root.randomize_button_action()
@@ -193,11 +194,13 @@
     GridLayout:
         cols: 1
         Label:
+            markup: True
+            color: 1,1,1,1
             id: text_label
             text_size: self.width, None
             size_hint: 1, None
             halign: "center"
-        Button:
+        HoverButton:
             size_hint: (root.width, 0.5)
             text: "Ok"
             on_release: root.dismiss()
@@ -230,3 +233,23 @@
     halign: "left"
     valign: "top"
     padding: (20, 0)
+
+<Label>:
+    markup: True
+    color: 0,0,0,1
+
+<HoverButton>:
+#    background_normal: ''
+#    background_color: 0, 0, 0, 1
+    color: 1,1,1,1
+    background_color: 0,0,0,0  # the last zero is the critical on, make invisible
+    canvas.before:
+        Color:
+            rgba: (.4,.4,.4,1) if self.state=='normal' else (0,.7,.7,1)  # visual feedback of press
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [5,]
+
+<SpinnerOption>
+    color: 1,1,1,1
