@@ -1,4 +1,5 @@
 #:kivy 2.0.0
+#:import Window kivy.core.window.Window
 
 <MainMenu>
     cols: 1
@@ -20,8 +21,6 @@
 
     load_matrix_path: load_matrix_path
 
-#    guide_label: guide_label
-
 
     GridLayout:
         cols: 3
@@ -42,11 +41,10 @@
             on_release: root.browse_load_button_action()
 
 
-
     GridLayout:
         cols: 1
         size_hint: (root.width, 0.09)
-        Spinner:
+        HoverSpinner:
             color: 1,1,1,1
             id: technique_spinner
             size_hint: (root.width, root.height)
@@ -64,7 +62,7 @@
             size_hint: (0.1, root.height)
         Label:
             id: load_matrix_path
-            text: "Pilih rotasi matriks yang ingin dipakai"
+            text: "Pilih matriks rotasi yang ingin digunakan"
             size: self.texture_size
             text_size: self.size
             halign: 'left'
@@ -92,13 +90,13 @@
             input_filter: 'float'
         HoverButton:
             id: calculate_k_button
-            text: "Hitung Nilai K"
-            size_hint: (0.1, root.height)
+            text: "Hitung Nilai Min K"
+            size_hint: (0.12, root.height)
             on_release: root.calculate_k_button_action()
         Label:
             id: dimension_label
-            size_hint: (0.1, root.height)
-            text: "Target Dimensi"
+            size_hint: (0.07, root.height)
+            text: "Variabel K"
         TextInput:
             id: dimension_value
             size_hint: (0.05, root.height)
@@ -155,32 +153,6 @@
                     id: randomization_result_description_layout
                     orientation: "vertical"
 
-#        BoxLayout:
-#            orientation: "vertical"
-#            canvas.before:
-#                Color:
-#                    rgba: .5, .5, .5, 1
-#                Line:
-#                    width: 2
-#                    rectangle: self.x, self.y, self.width, self.height
-#            Label:
-#                text: "Petunjuk Pengunaan"
-#                size_hint: (1, 0.25)
-#                text_size: self.size
-#                halign: "center"
-#                valign: "top"
-#                padding: (20, 20)
-#
-#            BoxLayout:
-#                orientation: "vertical"
-#                Label:
-#                    id: guide_label
-#                    size_hint: (1, 0.14)
-#                    text_size: self.size
-#                    halign: "left"
-#                    valign: "top"
-#                    padding: (20, 0)
-
 
 
 <WarningPopup>
@@ -203,7 +175,7 @@
         HoverButton:
             size_hint: (root.width, 0.5)
             text: "Ok"
-            on_release: root.dismiss()
+            on_release: root.dismiss(); Window.set_system_cursor("arrow")
 
 <LoadingPopup>
     title: 'Random Projection Perturbation'
@@ -240,8 +212,6 @@
     color: 0,0,0,1
 
 <HoverButton>:
-#    background_normal: ''
-#    background_color: 0, 0, 0, 1
     color: 1,1,1,1
     background_color: 0,0,0,0  # the last zero is the critical on, make invisible
     canvas.before:

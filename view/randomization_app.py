@@ -3,6 +3,8 @@ Config.set('graphics', 'width', '1024')
 Config.set('graphics', 'height', '600')
 Config.set('kivy', 'window_icon', 'view/assets/r.ico')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+
+from kivy.uix.spinner import Spinner, SpinnerOption
 from kivy.core.window import Window
 # Window.clearcolor = (214/255.0, 217/255.0, 223/255.0, 1)
 Window.clearcolor = (1, 1, 1, 1)
@@ -59,10 +61,19 @@ Factory.register('HoverBehavior', HoverBehavior)
 
 class HoverButton(Button, HoverBehavior):
     def on_enter(self, *args):
+        Window.set_system_cursor("hand")
         self.background_color = 1,1,1,1
 
     def on_leave(self, *args):
+        Window.set_system_cursor("arrow")
         self.background_color = 0,0,0,0
+
+class HoverSpinner(Spinner, HoverBehavior):
+    def on_enter(self, *args):
+        Window.set_system_cursor("hand")
+
+    def on_leave(self, *args):
+        Window.set_system_cursor("arrow")
 
 class RandomizationApp(App):
     def build(self):
