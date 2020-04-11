@@ -44,10 +44,8 @@ class MainMenu(GridLayout):
 
     load_matrix_path = ObjectProperty(None)
 
-    # guide_label = ObjectProperty(None)
-
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(GridLayout, self).__init__(**kwargs)
         self.on_technique_spinner_select("Random Rotation Perturbation")
 
     def calculate_k_button_action(self):
@@ -235,7 +233,7 @@ class MainMenu(GridLayout):
             return
 
         self.loading_popup = LoadingPopup()
-        self.loading_popup.title = self.technique_spinner.text
+        self.loading_popup.title = "Membuat dan Menyimpan Matriks"
         self.loading_popup.open()
 
         self.loading_popup.progress(10)
@@ -289,7 +287,7 @@ class MainMenu(GridLayout):
             return
 
         self.loading_popup = LoadingPopup()
-        self.loading_popup.title = self.technique_spinner.text
+        self.loading_popup.title = "Memuat Matriks"
         self.loading_popup.open()
 
         self.loading_popup.progress(10)

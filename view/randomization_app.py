@@ -4,6 +4,7 @@ Config.set('graphics', 'height', '600')
 Config.set('kivy', 'window_icon', 'view/assets/r.ico')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
 
+from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner, SpinnerOption
 from kivy.core.window import Window
 # Window.clearcolor = (214/255.0, 217/255.0, 223/255.0, 1)
@@ -71,6 +72,13 @@ class HoverButton(Button, HoverBehavior):
 class HoverSpinner(Spinner, HoverBehavior):
     def on_enter(self, *args):
         Window.set_system_cursor("hand")
+
+    def on_leave(self, *args):
+        Window.set_system_cursor("arrow")
+
+class HoverTextInput(TextInput, HoverBehavior):
+    def on_enter(self, *args):
+        Window.set_system_cursor("ibeam")
 
     def on_leave(self, *args):
         Window.set_system_cursor("arrow")
