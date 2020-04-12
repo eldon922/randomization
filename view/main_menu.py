@@ -66,10 +66,8 @@ class MainMenu(GridLayout):
         return True
 
     def browse_load_button_action(self):
-        # self.path = filedialog.askopenfilename()
-        self.path = filechooser.open_file(title="Pilih dataset berbentuk dokumen CSV..",
-                                          filters=[("Comma-separated Values", "*.csv")])
-        if len(self.path) == 0:
+        self.path = self.browse_load_file()
+        if not self.path:
             return
 
         self.loading_popup = LoadingPopup()
@@ -83,7 +81,7 @@ class MainMenu(GridLayout):
     def browse_load(self):
         self.csv_preprocessor = CSVPreprocessor()
         try:
-            self.csv_preprocessor.readCSV(self.path[0])
+            self.csv_preprocessor.readCSV(self.path)
         except:
             WarningPopup().open("Dokumen CSV yang dimasukkan tidak sesuai dengan persyaratan!")
             self.loading_popup.dismiss()
@@ -92,7 +90,7 @@ class MainMenu(GridLayout):
         self.dataset = self.csv_preprocessor.csvToMatrix()
 
         self.randomization_result_description_layout.clear_widgets()
-        self.load_file_path.text = self.path[0]
+        self.load_file_path.text = self.path
         if self.technique_spinner.text == "Random Rotation Perturbation":
             self.load_matrix_path.text = "Pilih matriks rotasi yang ingin digunakan"
         else:
@@ -118,6 +116,14 @@ class MainMenu(GridLayout):
         self.loading_popup.progress(100)
         self.loading_popup.dismiss()
 
+    def browse_load_file(self):
+        path = filechooser.open_file(title="Pilih dokumen CSV..",
+                                          filters=[("Comma-separated Values", "*.csv")])
+        if len(path) != 0:
+            return path[0]
+        else:
+            return False
+
     def browse_save(self):
         path = filechooser.save_file(title="Simpan hasil berbentuk dokumen CSV..",
                                      filters=[("Comma-separated Values", "*.csv")])
@@ -128,7 +134,7 @@ class MainMenu(GridLayout):
             else:
                 return path[0] + ".csv"
         else:
-            False
+            return False
 
     def on_technique_spinner_select(self, text):
         self.randomization_result_description_layout.clear_widgets()
@@ -280,10 +286,8 @@ class MainMenu(GridLayout):
         if self.load_file_path_empty():
             return
 
-        self.matrix_path = filechooser.open_file(title="Pilih matriks berbentuk dokumen CSV..",
-                                            filters=[("Comma-separated Values", "*.csv")])
-
-        if len(self.matrix_path) == 0:
+        self.matrix_path = self.browse_load_file()
+        if not self.matrix_path:
             return
 
         self.loading_popup = LoadingPopup()
@@ -299,7 +303,7 @@ class MainMenu(GridLayout):
         if self.technique_spinner.text == "Random Rotation Perturbation":
             try:
                 rotationMatrixPreprocessor = RotationMatrixPreprocessor()
-                if not rotationMatrixPreprocessor.read_from_csv(self.matrix_path[0], self.dataset.getNumberOfColumns()):
+                if not rotationMatrixPreprocessor.read_from_csv(self.matrix_path, self.dataset.getNumberOfColumns()):
                     self.loading_popup.dismiss()
                     WarningPopup().open(
                         "Matriks yang dipilih tidak sesuai dengan dataset!")
@@ -315,7 +319,7 @@ class MainMenu(GridLayout):
                 return
         else:
             projectionMatrixPreprocessor = ProjectionMatrixPreprocessor()
-            if not projectionMatrixPreprocessor.read_from_csv(self.matrix_path[0], self.dataset.getNumberOfColumns()):
+            if not projectionMatrixPreprocessor.read_from_csv(self.matrix_path, self.dataset.getNumberOfColumns()):
                 self.loading_popup.dismiss()
                 WarningPopup().open(
                     "Matriks yang dipilih tidak sesuai dengan dataset!")
@@ -326,7 +330,7 @@ class MainMenu(GridLayout):
             self.randomProjectionMatrix = projectionMatrixPreprocessor.getProjectionMatrix()
             self.dimension_value.text = str(self.randomProjectionMatrix.getNumberOfRows())
 
-        self.load_matrix_path.text = self.matrix_path[0]
+        self.load_matrix_path.text = self.matrix_path
 
         self.loading_popup.progress(100)
         self.loading_popup.dismiss()
@@ -449,16 +453,18 @@ class MainMenu(GridLayout):
 
             self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "BERHASIL"))
             self.randomization_result_description_layout.add_widget(
-                DescriptionLabel("Lokasi Dokumen", save_path))
+                DescriptionLabel("Lokasi dokumen", save_path))
             self.randomization_result_description_layout.add_widget(
-                DescriptionLabel("Jumlah Kolom", str(randomizer.getPerturbedDataset().getNumberOfColumns())))
+                DescriptionLabel("Lokasi dokumen matriks yang dipakai", self.matrix_path))
+            self.randomization_result_description_layout.add_widget(
+                DescriptionLabel("Jumlah kolom", str(randomizer.getPerturbedDataset().getNumberOfColumns())))
             if self.technique_spinner.text == "Random Projection Perturbation":
                 self.randomization_result_description_layout.add_widget(
                     DescriptionLabel("Nilai variabel epsilon yang digunakan", str(randomizer.getEpsilon())))
                 self.randomization_result_description_layout.add_widget(
                     DescriptionLabel("Nilai variabel K yang digunakan", self.dimension_value.text))
             self.randomization_result_description_layout.add_widget(
-                DescriptionLabel("Waktu Eksekusi", str((initialize_time + perturb_time + self.create_matrix_time) % 60) + " detik"))
+                DescriptionLabel("Waktu eksekusi", str((initialize_time + perturb_time + self.create_matrix_time) % 60) + " detik"))
 
             self.loading_popup.progress(100)
             self.loading_popup.dismiss()
