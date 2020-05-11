@@ -17,11 +17,6 @@ class CSVPreprocessor:
 
         self._matrix = None
         self._nameOfColumns = None
-        self._resultFilePath = None
-
-    def dropColumn(self, columnName):
-        del self._dataCSV[columnName]
-        return True
 
     def csvToMatrix(self):
         self._matrix = Matrix(array(self._dataCSV.values))

@@ -58,9 +58,9 @@ class MainMenu(GridLayout):
         self.calculate_and_check_k(randomizer)
 
     def calculate_and_check_k(self, randomizer):
-        self.k_label.change_value(str(randomizer.getK()))
+        self.k_label.change_value(str(randomizer.getMinK()))
 
-        if not randomizer.checkK():
+        if not randomizer.checkMinK():
             WarningPopup().open("Nilai minimal variabel K lebih besar dari dimensi dataset!\nMohon mengganti nilai variabel Epsilon!")
             return False
 
@@ -228,7 +228,7 @@ class MainMenu(GridLayout):
             if not self.calculate_and_check_k(randomizer):
                 return
 
-            if not randomizer.checkDimensionTarget():
+            if not randomizer.checkVariableK():
                 WarningPopup().open(
                     "Nilai dari variabel K wajib lebih besar dari atau sama dengan nilai minimal variabel K "
                     "dan lebih kecil dari dimensi dataset yang ingin dirandomisasi!\nMohon mengganti nilai variabel K!")
@@ -392,7 +392,7 @@ class MainMenu(GridLayout):
                     self.loading_popup.dismiss()
                     return
 
-                if not randomizer.checkDimensionTarget():
+                if not randomizer.checkVariableK():
                     self.loading_popup.dismiss()
                     WarningPopup().open(
                         "Nilai dari variabel K wajib lebih besar dari atau sama dengan nilai minimal variabel K "

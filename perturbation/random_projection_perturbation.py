@@ -4,15 +4,15 @@ from matrix.matrix import Matrix
 
 
 class RandomProjectionPerturbation(Perturbation):
-    def __init__(self, dataset, epsilon, dimensionTarget=0, randomProjectionMatrix=False):
+    def __init__(self, dataset, epsilon, k=0, randomProjectionMatrix=False):
         super().__init__(dataset)
         self._epsilon = epsilon
-        self._dimensionTarget = dimensionTarget
+        self._k = k
 
-        self._k = None
-        self.calculateK()
+        self._MinK = None
+        self.calculateMinK()
 
-        self._transformer = self.GaussianRandomProjection(n_components=dimensionTarget, eps=epsilon,
+        self._transformer = self.GaussianRandomProjection(n_components=k, eps=epsilon,
                                                           randomProjectionMatrix=randomProjectionMatrix)
 
     def perturbDataset(self):
@@ -21,18 +21,18 @@ class RandomProjectionPerturbation(Perturbation):
     def getEpsilon(self):
         return self._transformer.eps
 
-    def getK(self):
-        return self._k
+    def getMinK(self):
+        return self._MinK
 
-    def calculateK(self):
-        self._k = johnson_lindenstrauss_min_dim(
+    def calculateMinK(self):
+        self._MinK = johnson_lindenstrauss_min_dim(
             self._dataset.getNumberOfRows(), self._epsilon)
 
-    def checkK(self):
-        return self._k < self._dataset.getNumberOfColumns()
+    def checkMinK(self):
+        return self._MinK < self._dataset.getNumberOfColumns()
 
-    def checkDimensionTarget(self):
-        return self._k <= self._dimensionTarget < self._dataset.getNumberOfColumns()
+    def checkVariableK(self):
+        return self._MinK <= self._k < self._dataset.getNumberOfColumns()
 
     class GaussianRandomProjection(GaussianRandomProjection):
         def __init__(self, n_components, eps, randomProjectionMatrix):
