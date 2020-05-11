@@ -3,6 +3,7 @@ from threading import Thread
 from time import time
 
 from kivy.properties import ObjectProperty
+from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -229,9 +230,8 @@ class MainMenu(GridLayout):
 
             if not randomizer.checkDimensionTarget():
                 WarningPopup().open(
-                    "Nilai dari variabel K wajib berada pada rentang nilai lebih besar dari atau sama dengan K "
-                    "dan lebih kecil dari atau sama dengan dimensi dataset yang ingin dirandomisasi!\nMohon mengganti "
-                    "variabel K!")
+                    "Nilai dari variabel K wajib lebih besar dari atau sama dengan nilai minimal variabel K "
+                    "dan lebih kecil dari dimensi dataset yang ingin dirandomisasi!\nMohon mengganti nilai variabel K!")
                 return
 
         self.matrix_path = self.browse_save()
@@ -256,7 +256,7 @@ class MainMenu(GridLayout):
 
             self.loading_popup.progress(50)
 
-            if RotationMatrixPreprocessor.save_to_csv(self.matrix_path, self.randomRotationMatrix, self.randomTranslationMatrix):
+            if RotationMatrixPreprocessor.saveToCSV(self.matrix_path, self.randomRotationMatrix, self.randomTranslationMatrix):
                 self.loading_popup.dismiss()
                 WarningPopup().open(
                     "Tolong menutup dokumen yang dipilih yaitu " + self.matrix_path)
@@ -270,7 +270,7 @@ class MainMenu(GridLayout):
 
             self.loading_popup.progress(50)
 
-            if ProjectionMatrixPreprocessor.save_to_csv(self.matrix_path, self.randomProjectionMatrix):
+            if ProjectionMatrixPreprocessor.saveToCSV(self.matrix_path, self.randomProjectionMatrix):
                 self.loading_popup.dismiss()
                 WarningPopup().open(
                     "Tolong menutup dokumen yang dipilih yaitu " + self.matrix_path)
@@ -303,7 +303,7 @@ class MainMenu(GridLayout):
         if self.technique_spinner.text == "Random Rotation Perturbation":
             try:
                 rotationMatrixPreprocessor = RotationMatrixPreprocessor()
-                if not rotationMatrixPreprocessor.read_from_csv(self.matrix_path, self.dataset.getNumberOfColumns()):
+                if not rotationMatrixPreprocessor.readFromCSV(self.matrix_path, self.dataset.getNumberOfColumns()):
                     self.loading_popup.dismiss()
                     WarningPopup().open(
                         "Matriks yang dipilih tidak sesuai dengan dataset!")
@@ -319,7 +319,7 @@ class MainMenu(GridLayout):
                 return
         else:
             projectionMatrixPreprocessor = ProjectionMatrixPreprocessor()
-            if not projectionMatrixPreprocessor.read_from_csv(self.matrix_path, self.dataset.getNumberOfColumns()):
+            if not projectionMatrixPreprocessor.readFromCSV(self.matrix_path, self.dataset.getNumberOfColumns()):
                 self.loading_popup.dismiss()
                 WarningPopup().open(
                     "Matriks yang dipilih tidak sesuai dengan dataset!")
@@ -395,9 +395,8 @@ class MainMenu(GridLayout):
                 if not randomizer.checkDimensionTarget():
                     self.loading_popup.dismiss()
                     WarningPopup().open(
-                        "Nilai dari variabel K wajib berada pada rentang nilai lebih besar dari atau sama dengan K "
-                        "dan lebih kecil dari atau sama dengan dimensi dataset yang ingin dirandomisasi!\nMohon mengganti "
-                        "variabel K!")
+                        "Nilai dari variabel K wajib lebih besar dari atau sama dengan nilai minimal variabel K "
+                        "dan lebih kecil dari dimensi dataset yang ingin dirandomisasi!\nMohon mengganti nilai variabel K!")
                     self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
                     self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
                                                                                              "Nilai dari variabel K "
@@ -479,9 +478,11 @@ class MainMenu(GridLayout):
 
 class WarningPopup(Popup):
     text_label = ObjectProperty(None)
+    close_button = ObjectProperty(None)
 
     def open(self, text, *largs, **kwargs):
         self.text_label.text = text
+        self.close_button.focus = True
         super().open()
 
 

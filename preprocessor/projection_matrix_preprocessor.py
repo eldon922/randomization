@@ -7,7 +7,7 @@ class ProjectionMatrixPreprocessor:
     def __init__(self):
         self._projectionMatrix = None
 
-    def read_from_csv(self, filePath, dimension):
+    def readFromCSV(self, filePath, dimension):
         csvPreprocessor = CSVPreprocessor()
         csvPreprocessor.readCSV(filePath)
         matrix = csvPreprocessor.csvToMatrix()
@@ -21,7 +21,7 @@ class ProjectionMatrixPreprocessor:
         return self._projectionMatrix
 
     @staticmethod
-    def save_to_csv(path, projectionMatrix):
+    def saveToCSV(path, projectionMatrix):
         try:
             df = DataFrame(projectionMatrix.getRawMatrix())
             df.to_csv(path, index=False)

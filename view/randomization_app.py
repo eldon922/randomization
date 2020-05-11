@@ -3,6 +3,7 @@ Config.set('graphics', 'width', '1024')
 Config.set('graphics', 'height', '600')
 Config.set('kivy', 'window_icon', 'view/assets/r.ico')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+Config.set('kivy', 'exit_on_escape', '0')
 
 from kivy.uix.textinput import TextInput
 from kivy.uix.spinner import Spinner, SpinnerOption
@@ -12,6 +13,8 @@ Window.clearcolor = (1, 1, 1, 1)
 from kivy.properties import BooleanProperty, ObjectProperty
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.behaviors import FocusBehavior
+
 
 from .main_menu import MainMenu
 class HoverBehavior(object):
@@ -68,6 +71,15 @@ class HoverButton(Button, HoverBehavior):
     def on_leave(self, *args):
         Window.set_system_cursor("arrow")
         self.background_color = 0,0,0,0
+
+class PopupCloseButton(FocusBehavior, HoverButton):
+    def keyboard_on_key_down(self, window, keycode, text, modifiers):
+        super().keyboard_on_key_down(window, keycode, text, modifiers)
+        if keycode[1] == 'enter' or keycode[1] == 'numpadenter':  # deal with cycle
+            self.trigger_action()
+
+            return True
+        return False
 
 class HoverSpinner(Spinner, HoverBehavior):
     def on_enter(self, *args):

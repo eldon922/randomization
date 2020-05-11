@@ -88,6 +88,9 @@
             id: epsilon_value
             size_hint: (0.05, root.height)
             input_filter: 'float'
+            write_tab: False
+            multiline: False
+            on_text_validate: root.calculate_k_button_action()
         HoverButton:
             id: calculate_k_button
             text: "Hitung Nilai Min K"
@@ -101,6 +104,8 @@
             id: dimension_value
             size_hint: (0.05, root.height)
             input_filter: 'int'
+            write_tab: False
+            multiline: False
         HoverButton:
             text: "Randomisasi dan Simpan"
             size_hint: (0.4, root.height)
@@ -162,6 +167,7 @@
     auto_dismiss: False
 
     text_label: text_label
+    close_button: close_button
 
     GridLayout:
         cols: 1
@@ -172,10 +178,12 @@
             text_size: self.width, None
             size_hint: 1, None
             halign: "center"
-        HoverButton:
+        PopupCloseButton:
+            id: close_button
             size_hint: (root.width, 0.5)
             text: "Ok"
             on_release: root.dismiss(); Window.set_system_cursor("arrow")
+
 
 <LoadingPopup>
     title: 'Random Projection Perturbation'

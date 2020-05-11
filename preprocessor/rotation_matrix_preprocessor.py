@@ -9,7 +9,7 @@ class RotationMatrixPreprocessor:
         self._randomTranslationMatrix = None
         self._randomRotationMatrix = None
 
-    def read_from_csv(self, filePath, dimension):
+    def readFromCSV(self, filePath, dimension):
         csvPreprocessor = CSVPreprocessor()
         csvPreprocessor.readCSV(filePath)
         matrix = csvPreprocessor.csvToMatrix()
@@ -28,7 +28,7 @@ class RotationMatrixPreprocessor:
         return self._randomTranslationMatrix
 
     @staticmethod
-    def save_to_csv(path, randomRotationMatrix, randomTranslationMatrix):
+    def saveToCSV(path, randomRotationMatrix, randomTranslationMatrix):
         try:
             df1 = DataFrame(randomRotationMatrix.getRawMatrix())
             df2 = DataFrame(randomTranslationMatrix.getRawMatrix())
