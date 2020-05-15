@@ -31,7 +31,7 @@
             size_hint: (0.1, root.height)
         Label:
             id: load_file_path
-            text: "Belum ada dokumen CSV yang dipilih untuk dirandomisasi"
+            text: "Belum ada dokumen CSV yang dipilih untuk diacak"
             size: self.texture_size
             text_size: self.size
             halign: 'left'
@@ -107,7 +107,7 @@
             write_tab: False
             multiline: False
         HoverButton:
-            text: "Randomisasi dan Simpan"
+            text: "Acak dan Simpan"
             size_hint: (0.4, root.height)
             on_release: root.randomize_button_action()
 
@@ -147,7 +147,7 @@
                         width: 2
                         rectangle: self.x, self.y, self.width, self.height
                 Label:
-                    text: "Deskripsi Hasil Randomisasi"
+                    text: "Deskripsi Hasil Pengacakan"
                     size_hint: (1, 0.2)
                     text_size: self.size
                     halign: "center"

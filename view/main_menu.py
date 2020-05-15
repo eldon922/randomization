@@ -166,7 +166,7 @@ class MainMenu(GridLayout):
             hide_widget(self.calculate_k_button, False)
 
     def load_file_path_empty(self):
-        if self.load_file_path.text == "Belum ada dokumen CSV yang dipilih untuk dirandomisasi":
+        if self.load_file_path.text == "Belum ada dokumen CSV yang dipilih untuk diacak":
             WarningPopup().open("Mohon memilih dataset (dokumen CSV) terlebih dahulu!")
             return True
         else:
@@ -231,7 +231,7 @@ class MainMenu(GridLayout):
             if not randomizer.checkVariableK():
                 WarningPopup().open(
                     "Nilai dari variabel K wajib lebih besar dari atau sama dengan nilai minimal variabel K "
-                    "dan lebih kecil dari dimensi dataset yang ingin dirandomisasi!\nMohon mengganti nilai variabel K!")
+                    "dan lebih kecil dari dimensi dataset yang ingin diacak!\nMohon mengganti nilai variabel K!")
                 return
 
         self.matrix_path = self.browse_save()
@@ -396,7 +396,7 @@ class MainMenu(GridLayout):
                     self.loading_popup.dismiss()
                     WarningPopup().open(
                         "Nilai dari variabel K wajib lebih besar dari atau sama dengan nilai minimal variabel K "
-                        "dan lebih kecil dari dimensi dataset yang ingin dirandomisasi!\nMohon mengganti nilai variabel K!")
+                        "dan lebih kecil dari dimensi dataset yang ingin diacak!\nMohon mengganti nilai variabel K!")
                     self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
                     self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
                                                                                              "Nilai dari variabel K "
@@ -406,7 +406,7 @@ class MainMenu(GridLayout):
                                                                                              "dan lebih kecil dari atau "
                                                                                              "sama dengan dimensi dataset "
                                                                                              "yang ingin "
-                                                                                             "dirandomisasi!\nMohon "
+                                                                                             "diacak!\nMohon "
                                                                                              "mengganti "
                                                                                              "variabel K!"))
                     return
