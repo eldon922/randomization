@@ -482,7 +482,7 @@ class WarningPopup(Popup):
 
     def open(self, text, *largs, **kwargs):
         self.text_label.text = text
-        self.close_button.focus = True
+        # self.close_button.focus = True
         super().open()
 
 
