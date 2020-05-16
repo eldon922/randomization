@@ -446,8 +446,11 @@ class MainMenu(GridLayout):
                     "Tolong menutup dokumen yang dipilih yaitu " + save_path)
                 self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "GAGAL"))
                 self.randomization_result_description_layout.add_widget(DescriptionLabel("Alasan",
-                                                                                         "Sudah ada dokumen yang mempunyai nama yang sama yaitu " + save_path + " dan dibuka oleh program lain!\nMohon ditutup "
-                                                                                                                                                                "terlebih dahulu!"))
+                                                                                         "Sudah ada dokumen yang "
+                                                                                         "mempunyai nama yang sama yaitu " +
+                                                                                         save_path +
+                                                                                         " dan dibuka oleh program lain!"
+                                                                                         "\nMohon ditutup terlebih dahulu!"))
                 return
 
             self.randomization_result_description_layout.add_widget(DescriptionLabel("Status", "BERHASIL"))
