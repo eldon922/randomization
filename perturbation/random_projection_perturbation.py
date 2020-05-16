@@ -40,5 +40,4 @@ class RandomProjectionPerturbation(Perturbation):
             self._randomProjectionMatrix = randomProjectionMatrix
 
         def _make_random_matrix(self, n_components, n_features):
-            # TODO kasih if?
             return self._randomProjectionMatrix.getRawMatrix()
