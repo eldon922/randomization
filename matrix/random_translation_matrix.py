@@ -1,13 +1,13 @@
 from .matrix import Matrix
 from numpy import identity, append, ones
-from random import uniform
+from random import randint
 
 
 class RandomTranslationMatrix:
     @staticmethod
     def generate(dimension):
         matrix = identity(dimension)
-        matrix[-1][:-1] = [uniform(0, 100) for x in matrix[-1][:-1]]
+        matrix[-1][:-1] = [randint(0, 100) for x in matrix[-1][:-1]]
 
         return Matrix(matrix)
 
