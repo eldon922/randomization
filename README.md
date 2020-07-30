@@ -1,6 +1,6 @@
 # Randomization
 
-Privacy preserving data mining become serious concern nowadays. There is demand to make sure all data which used in data mining process to be secure and doesn't violate any privacy infringement. This software use randomization techniques to eliminate privacy in data but still can be used for data mining. Two randomization techniques implemented in this software that is Random Rotation Perturbation and Random Projection Perturbation.
+Privacy preserving data mining become a serious concern nowadays. There is demand to make sure all data which used in data mining process to be secure and doesn't violate any privacy infringement. This software use randomization techniques to eliminate privacy in data but still can be used for data mining. Two randomization techniques implemented in this software that is Random Rotation Perturbation and Random Projection Perturbation.
 
 This software inteded to be built for a research namely **Analysis of Random Rotation Perturbation and Random Projection Perturbation Techniques in Randomizing Data for Data Mining**.
 
@@ -61,4 +61,4 @@ The following instruction will demonstrate how to install the dependency and run
 
 ## Authors
 
-* **Chris Eldon** - *Graduate Student at Parahyangan Catholic University* - Computer Science
+* **Chris Eldon** - Computer Science - *Graduate Student at Parahyangan Catholic University*
