@@ -1,8 +1,8 @@
 # Randomization
 
-Privacy preserving data mining become a serious concern nowadays. There is demand to make sure all data which used in data mining process to be secure and doesn't violate any privacy infringement. This software use randomization techniques to eliminate privacy in data but still can be used for data mining. Two randomization techniques implemented in this software that is Random Rotation Perturbation and Random Projection Perturbation.
+Privacy preserving data mining become a serious concern nowadays. There is a demand to make sure all data which used in data mining process to be secure and doesn't violate any privacy infringement. This software use randomization techniques to eliminate privacy in data but still can be used for data mining. Two randomization techniques are implemented in this software that is Random Rotation Perturbation and Random Projection Perturbation.
 
-This software inteded to be built for a research namely **Analysis of Random Rotation Perturbation and Random Projection Perturbation Techniques in Randomizing Data for Data Mining**.
+This software intended to be built for a research namely **Analysis of Random Rotation Perturbation and Random Projection Perturbation Techniques in Randomizing Data for Data Mining**.
 
 ### Prerequisites
 
@@ -24,7 +24,7 @@ The following instruction will demonstrate how to install the dependency and run
 
 3. Go to the directory then open command prompt in that directory
 
-4. Create a Python virtual environment first (Note: actually you can skip this step to not use virtual environment but it's better practice to use it)
+4. Create a Python virtual environment first (Note: actually you can skip this step to not use virtual environment but it's a better practice to use it)
     ```
     python -m venv venv
     ```
