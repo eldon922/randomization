@@ -2,7 +2,7 @@
 
 Privacy preserving data mining become a serious concern nowadays. There is a demand to make sure all data which used in data mining process to be secure and doesn't violate any privacy infringement. This software use randomization techniques to eliminate privacy in data but still can be used for data mining. Two randomization techniques are implemented in this software i.e. Random Rotation Perturbation and Random Projection Perturbation.
 
-This software is intended to be built for a research namely **Analysis of Random Rotation Perturbation and Random Projection Perturbation Techniques in Randomizing Data for Data Mining**.
+This software is intended to be built for a research namely [**Analysis of Random Rotation Perturbation and Random Projection Perturbation Techniques in Randomizing Data for Data Mining**](https://github.com/eldon97/Skripsi).
 
 ### Prerequisites
 
@@ -61,4 +61,4 @@ The following instruction will demonstrate how to install the dependency and run
 
 ## Authors
 
-* **Chris Eldon** - Computer Science - *Graduate Student at Parahyangan Catholic University*
+* **Chris Eldon** - Computer Science - *Undergraduate Student at Parahyangan Catholic University*
